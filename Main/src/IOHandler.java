@@ -5,16 +5,38 @@ import java.io.InputStreamReader;
 public class IOHandler
 {
 
+    protected String query;
+
     // Constructor
+
     public IOHandler() throws IOException
+    {
+
+        /*
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+
+        String name = reader.readLine();
+
+        System.out.print(name);
+
+         */
+
+
+
+
+    }
+
+    public String inputReader() throws IOException
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 
         String name = reader.readLine();
 
+        System.out.print(name);
 
-        System.out.println(name);
+        return name;
     }
 
 
