@@ -3,14 +3,9 @@ import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenSource;
 import org.antlr.v4.gui.TreeViewer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.misc.Graph;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
 import javax.swing.*;
 import java.io.*;
 import java.util.Arrays;
@@ -19,12 +14,20 @@ import java.util.stream.IntStream;
 
 public class Main
 {
+
+
+
+
     public static void main(String[] args) throws IOException
     {
 
         IOHandler handler = new IOHandler(); // Creating a simple IO machinery as base for upcoming tasks.
 
+        CypherWalker walker = new CypherWalker();
+
         String query = handler.inputReader();
+
+
 
         // This may be used in case we'll work with inputs over files.
         // InputStream inptStream = new FileInputStream(query);
@@ -38,12 +41,24 @@ public class Main
 
         CypherParser cyphPars = new CypherParser(tokenStream);
 
-        // cyphPars.oC_Query();
 
-        ParseTree tree = cyphPars.oC_Query();
 
-        // Output tree in pure String format.
+        ParseTree tree = cyphPars.oC_Cypher();
+
+
+
+
+
+
+        // Output tree in pure String format. Use CREATE (adam:User {name: 'Adam'}) as test.
+
         System.out.println(tree.toStringTree(cyphPars));
+
+        //walker.listener.enterEveryRule(cyphPars.getRuleContext());
+        //walker.findNode(tree, walker.listener, cyphPars, "Adam");
+
+
+
 
 
         // JFrame and Panel for visualization.
@@ -60,5 +75,8 @@ public class Main
 
 
     }
+
+
+
 
 }
