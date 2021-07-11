@@ -1,4 +1,5 @@
 import Cypher_Files.CypherLexer;
+import Cypher_Files.CypherParser;
 import de.unibi.agbi.biodwh2.core.model.graph.Node;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenSource;
@@ -14,57 +15,80 @@ import java.util.stream.IntStream;
 public class CypherWalker
 {
 
+
     public CypherWalker()
     {
         super();
-
-    }
-
-
-    public String findNode(ParseTree tree, ParseTreeListener listener, Parser parser, String entry)
-    {
-
-        ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(listener, tree);
-
-        
-        if (tree.toStringTree(parser).matches(entry)){
-            System.out.println(entry);
-            return entry;
-        }
-
-        else{
-            System.out.print("Entry not found");
-            return null;
-        }
+      //  CypherParser cyphPars = new CypherParser(tokenStream)
 
 
     }
 
-    ParseTreeListener listener = new ParseTreeListener()
+
+    public void nodeIterator(String query)
     {
-        @Override
-        public void visitTerminal(TerminalNode terminalNode) {
 
-        }
+        CharStream stream = (CharStream) CharStreams.fromString(query);
 
-        @Override
-        public void visitErrorNode(ErrorNode errorNode) {
+        CypherLexer cyphLexer = new CypherLexer(stream);
 
-        }
+        TokenStream tokenStream = new CommonTokenStream(cyphLexer);
 
-        @Override
-        public void enterEveryRule(ParserRuleContext parserRuleContext)
-        {
-            parserRuleContext.getText();
+        CypherParser cyphPars = new CypherParser(tokenStream);
 
-        }
+        final CypherParser.OC_CypherContext context = cyphPars.oC_Cypher();
 
-        @Override
-        public void exitEveryRule(ParserRuleContext parserRuleContext)
-        {
-            parserRuleContext.exitRule(listener);
-        }
-    };
+   for(int i = 0; i < context.getChildCount(); i++) {
+    final ParseTree tree = context.getChild(i);
+    System.out.println(context.getChild(i));
+    if (tree instanceof CypherParser.OC_StatementContext)
+        executeStatement((CypherParser.OC_StatementContext) tree);
+                                                        }
+
+
+    }
+
+    private void executeStatement(final CypherParser.OC_StatementContext statement)
+    {
+        final CypherParser.OC_QueryContext query = statement.oC_Query();
+        if (query.oC_StandaloneCall() != null)
+            query.oC_StandaloneCall();
+        else if (query.oC_RegularQuery() != null)
+            query.oC_RegularQuery();
+    }
+
+    /*
+    // JFrame and Panel for visualization.
+
+     */
+    public void treeViewing(String query)
+    {
+
+        CharStream stream = (CharStream) CharStreams.fromString(query);
+
+        CypherLexer cyphLexer = new CypherLexer(stream);
+
+        TokenStream tokenStream = new CommonTokenStream(cyphLexer);
+
+        CypherParser cyphPars = new CypherParser(tokenStream);
+
+        ParseTree tree = cyphPars.oC_Cypher();
+
+        CypherParser.OC_CypherContext context = cyphPars.oC_Cypher();
+
+        JFrame frame = new JFrame("Testing the tree ...");
+        JPanel panel = new JPanel();
+        TreeViewer viewer = new TreeViewer(Arrays.asList(cyphPars.getRuleNames()), tree);
+        panel.add(viewer);
+        frame.add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
+
+    }
+
+
+
 
 }
