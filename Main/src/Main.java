@@ -25,11 +25,17 @@ public class Main
 
         String query = handler.inputReader();
 
+        String testVariable = "Developer";
+       // String testVariable = "Andy";
+        // For testing purposes, use this query: CREATE (n:Person {name: 'Andy', title: 'Developer'})
+
         CypherWalker walker = new CypherWalker();
+
+        walker.testIterator(testVariable);
 
         walker.treeViewing(query);
 
-        walker.nodeIterator(query);
+      //  walker.nodeIterator(query);
 
 
 

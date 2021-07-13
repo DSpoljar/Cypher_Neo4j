@@ -25,6 +25,37 @@ public class CypherWalker
     }
 
 
+    public String testIterator(String variable)
+    {
+        CharStream stream = (CharStream) CharStreams.fromString(variable);
+
+        CypherLexer cyphLexer = new CypherLexer(stream);
+
+        TokenStream tokenStream = new CommonTokenStream(cyphLexer);
+
+        CypherParser cyphPars = new CypherParser(tokenStream);
+
+        final CypherParser.OC_CypherContext context = cyphPars.oC_Cypher();
+
+        for(int i = 0; i < context.getChildCount(); i++)
+        {
+            System.out.print( context.getChildCount());
+            System.out.print(context.getChild(i)+ "\n");
+            final ParseTree tree = context.getChild(i);
+            if (variable == context.getChild(i).toString())
+            {
+                System.out.println(context.getChild(i).toString());
+                return context.getChild(i).toString();
+
+            }
+
+        }
+
+        return "No query";
+
+    }
+
+
     public void nodeIterator(String query)
     {
 
