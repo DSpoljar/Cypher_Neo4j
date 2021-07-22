@@ -17,19 +17,8 @@ public class Main
         String query = handler.inputReader();
 
         String testVariable = "MATCH (n:Gene) RETURN n";
-       // String testVariable = "Andy";
-        // For testing purposes, use this query: CREATE (n:Person {name: 'Andy', title: 'Developer'})
 
         CypherWalker walker = new CypherWalker();
-
-
-     //   walker.treeViewing(query);
-
-      //  walker.nodeIterator(query);
-
-
-
-
 
     }
 
