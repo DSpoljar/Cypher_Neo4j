@@ -40,26 +40,142 @@ public class CypherWalker
 
         final CypherParser.OC_CypherContext context = cyphPars.oC_Cypher();
 
+        // System.out.print(context.toString());
+
         for(int i = 0; i < context.getChildCount(); i++)
         {
 
 
             final ParseTree tree = context.getChild(i);
-            //System.out.print("before if:"+tree.toString());
+
+           // System.out.println(context.getChildCount());
+
             if (tree instanceof CypherParser.OC_StatementContext)
+            {
+
 
                 // Different executing statements:
 
-               //executeRegularStatement((CypherParser.OC_StatementContext) tree);
-               // returnSymbolicName((CypherParser.OC_StatementContext) tree);
-                //executeSingularStatement((CypherParser.OC_StatementContext)  tree);
-                returnLabel((CypherParser.OC_StatementContext) tree);
+                // Starting on the top ...
+                 executeStatement((CypherParser.OC_StatementContext) tree);
+
+                // returnSymbolicName((CypherParser.OC_StatementContext) tree);
+                // executeSingularStatement((CypherParser.OC_StatementContext)  tree);
+                // returnLabel((CypherParser.OC_StatementContext) tree);
                 // System.out.print("in if"+context.getChild(i).toString());
+
+
+            }
+
+
 
 
         }
 
     }
+
+    private void executeStatement(final CypherParser.OC_StatementContext statement)
+    {
+        final CypherParser.OC_QueryContext query = statement.oC_Query();
+
+        if (query.oC_StandaloneCall() != null)
+        {
+            System.out.println("OC_StandaloneCall:"+query.oC_StandaloneCall());
+            query.oC_StandaloneCall();
+        }
+        else if (query.oC_RegularQuery() != null)
+        {
+            executeSingleQuery(query.oC_RegularQuery());
+            System.out.println("OC_RegQuery:"+query.oC_RegularQuery());
+        }
+
+
+    }
+
+
+
+    private void executeSingleQuery(CypherParser.OC_RegularQueryContext statement)
+    {
+
+        final CypherParser.OC_SingleQueryContext query = statement.oC_SingleQuery();
+
+
+        if (query != null)
+        {
+            System.out.println("OC_SingleQuery:"+query.toString()); // Write this in a variable later (if  required)
+            executeSinglePartQuery(query.oC_SinglePartQuery());
+
+        }
+
+        // TODO: Add if MultiPartQuery later!
+
+
+
+    }
+
+    private void executeSinglePartQuery(CypherParser.OC_SinglePartQueryContext statement)
+    {
+
+        final CypherParser.OC_SinglePartQueryContext query = statement;
+
+        for (int i = 0; i < query.getChildCount(); i++)
+        {
+            if (query.oC_ReadingClause(i) != null)
+            {
+
+                System.out.println("OC_ReadingClause:"+query.oC_ReadingClause(i).toString()); // Write this in a variable later (if  required)
+              executeReadingClause(query.oC_ReadingClause(i));
+
+
+            }
+
+            else if (query.oC_UpdatingClause(i) != null)
+            {
+                System.out.println("OC_UpdatingClause:"+query.oC_UpdatingClause(i).toString());
+                executeUpdatingClause(query.oC_UpdatingClause(i));
+
+            }
+
+            else
+            {
+                System.out.println("Empty / placeholder in SinglePartQuery"+"\n");
+            }
+
+        }
+
+
+    }
+
+    private void executeReadingClause(CypherParser.OC_ReadingClauseContext statement)
+    {
+        final CypherParser.OC_ReadingClauseContext query = statement;
+
+        if (query.oC_Match() != null)
+        {
+            System.out.println("OC_Match:"+query.oC_Match().toString());
+
+        }
+        else
+        {
+
+            System.out.println("Empty / Placeholder in ReadingClause" + "\n");
+
+        }
+
+
+    }
+
+    private void executeUpdatingClause(CypherParser.OC_UpdatingClauseContext statement)
+    {
+
+        // TODO: The usual stuff
+
+    }
+
+
+    
+
+    // Experimental function.
 
     private void returnSymbolicName(final CypherParser.OC_StatementContext statement)
     {
@@ -89,39 +205,9 @@ public class CypherWalker
     }
 
 
-    private void executeRegularStatement(final CypherParser.OC_StatementContext statement)
-    {
-        final CypherParser.OC_QueryContext query = statement.oC_Query();
-        if (query.oC_StandaloneCall() != null)
-        {
-            System.out.println("OC_StandaloneCall:"+query.oC_StandaloneCall());
-            query.oC_StandaloneCall();
-        }
-        else if (query.oC_RegularQuery() != null)
-        {
-            query.oC_RegularQuery();
-            System.out.println("OC_RegQuery:"+query.oC_RegularQuery());
-        }
 
 
-    }
-
-    private void executeSingularStatement(final CypherParser.OC_StatementContext statement)
-    {
-
-        if (statement.oC_Query().oC_StandaloneCall() != null)
-        {
-            System.out.println("OC_StandaloneCall:"+statement.oC_Query().oC_StandaloneCall());
-            statement.oC_Query().oC_StandaloneCall();
-        }
-        else if (statement.oC_Query().oC_RegularQuery() != null)
-        {
-            statement.oC_Query().oC_RegularQuery();
-            System.out.println("OC_SingQuery:"+statement.oC_Query().oC_RegularQuery().oC_SingleQuery());
-        }
-
-
-    }
+    // Experimental function.
 
     private String returnLabel(final CypherParser.OC_StatementContext statement)
     {
@@ -167,13 +253,9 @@ public class CypherWalker
     }
 
 
-
-    // TODO: Für jedes Statement eine Methode
-
-
-
     /*
-    // JFrame and Panel for visualization.
+     JFrame and Panel for visualization.
+     TODO: Possible rei-integration of TreeViewer at later point
      */
 
     public void treeViewing(String query)
