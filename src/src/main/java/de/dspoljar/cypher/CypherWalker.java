@@ -56,7 +56,7 @@ public class CypherWalker
 
                 // Different executing statements:
 
-                // Starting on the top ...
+                // Starting at the top ...
                  executeStatement((CypherParser.OC_StatementContext) tree);
 
                 // returnSymbolicName((CypherParser.OC_StatementContext) tree);
@@ -100,7 +100,7 @@ public class CypherWalker
         final CypherParser.OC_SingleQueryContext query = statement.oC_SingleQuery();
 
 
-        if (query != null)
+        if (query.oC_SinglePartQuery() != null)
         {
             System.out.println("OC_SingleQuery:"+query.toString()); // Write this in a variable later (if  required)
             executeSinglePartQuery(query.oC_SinglePartQuery());
@@ -118,13 +118,15 @@ public class CypherWalker
 
         final CypherParser.OC_SinglePartQueryContext query = statement;
 
+
         for (int i = 0; i < query.getChildCount(); i++)
         {
             if (query.oC_ReadingClause(i) != null)
             {
 
                 System.out.println("OC_ReadingClause:"+query.oC_ReadingClause(i).toString()); // Write this in a variable later (if  required)
-              executeReadingClause(query.oC_ReadingClause(i));
+                executeReadingClause(query.oC_ReadingClause(i));
+
 
 
             }
@@ -133,6 +135,30 @@ public class CypherWalker
             {
                 System.out.println("OC_UpdatingClause:"+query.oC_UpdatingClause(i).toString());
                 executeUpdatingClause(query.oC_UpdatingClause(i));
+
+            }
+
+            else if(query.oC_Return() != null)
+            {
+
+                System.out.println("OC_Return:"+query.oC_Return().toString());
+                System.out.print("Children of RETURN: "+query.oC_Return().children.toString());
+                
+                //  This loop aims to find the operator RETURN in the query.
+                for (int j = 0; j  < query.oC_Return().getChildCount(); j ++)
+                {
+                    if (query.oC_Return().getChild(j).toString().startsWith("RETURN"))
+                    {
+                        System.out.println("Return RETURN: "+query.oC_Return().getChild(j).toString());  // Return RETURN.
+                    }
+                    else
+                    {
+                        // System.out.print("No MATCH");
+                    }
+
+                }
+
+
 
             }
 
@@ -152,13 +178,38 @@ public class CypherWalker
 
         if (query.oC_Match() != null)
         {
-            System.out.println("OC_Match:"+query.oC_Match().toString());
+
+            System.out.println("OC_Match (Reading):"+query.oC_Match().toString());
+            System.out.println("Returns CHILDREN:"+query.oC_Match().children.toString());
+
+            //  This loop aims to find the operator MATCH in the query.
+            for (int j = 0; j  < query.oC_Match().getChildCount(); j ++)
+            {
+                if (query.oC_Match().getChild(j).toString().startsWith("MATCH"))
+                {
+                    System.out.println("Return MATCH: "+query.oC_Match().getChild(j).toString());  // Here, we return  the MATCH OPERATOR!
+                }
+                else
+                {
+                   // System.out.print("No MATCH");
+                }
+
+            }
+
 
         }
-        else
+
+        else if(query.oC_Unwind() != null)
         {
 
-            System.out.println("Empty / Placeholder in ReadingClause" + "\n");
+            System.out.println("OC_Unwind (Reading):"+query.oC_Unwind().toString());
+
+        }
+
+        else if(query.oC_InQueryCall() != null)
+        {
+
+            System.out.println("OC_InQueryCall (Reading):"+query.oC_InQueryCall().toString());
 
         }
 
@@ -168,12 +219,36 @@ public class CypherWalker
     private void executeUpdatingClause(CypherParser.OC_UpdatingClauseContext statement)
     {
 
-        // TODO: The usual stuff
+        final CypherParser.OC_UpdatingClauseContext query = statement;
+
+        if (query.oC_Create() != null)
+        {
+
+            System.out.println("OC_Create:"+query.oC_Create().toString());
+
+        }
+
+        else if (query.oC_Delete() != null)
+        {
+            System.out.println("OC_Delete:"+query.oC_Delete().toString());
+
+        }
+
+        else if (query.oC_Merge() != null)
+        {
+            System.out.println("OC_Merge:"+query.oC_Merge().toString());
+
+        }
+        else if (query.oC_Set() != null)
+        {
+
+            System.out.println("OC_Set:"+query.oC_Set().toString());
+
+        }
+
 
     }
 
-
-    
 
     // Experimental function.
 
@@ -255,7 +330,7 @@ public class CypherWalker
 
     /*
      JFrame and Panel for visualization.
-     TODO: Possible rei-integration of TreeViewer at later point
+     TODO: Possible re-integration of TreeViewer at later point
      */
 
     public void treeViewing(String query)
