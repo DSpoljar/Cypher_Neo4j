@@ -142,8 +142,16 @@ public class CypherWalker
             {
 
                 System.out.println("OC_Return:"+query.oC_Return().toString());
-                System.out.print("Children of RETURN: "+query.oC_Return().children.toString());
-                
+
+                System.out.println("return:  "+query.oC_Return().RETURN().toString());  //  Return RETURN easier.
+
+                // System.out.println(query.oC_Return().oC_ProjectionBody().children.toString());  // Contains the blank space (?)
+
+                executeReturnClause(query.oC_Return());
+
+
+
+                /*
                 //  This loop aims to find the operator RETURN in the query.
                 for (int j = 0; j  < query.oC_Return().getChildCount(); j ++)
                 {
@@ -156,7 +164,7 @@ public class CypherWalker
                         // System.out.print("No MATCH");
                     }
 
-                }
+                } */
 
 
 
@@ -180,8 +188,11 @@ public class CypherWalker
         {
 
             System.out.println("OC_Match (Reading):"+query.oC_Match().toString());
-            System.out.println("Returns CHILDREN:"+query.oC_Match().children.toString());
+            //System.out.println("Returns CHILDREN:"+query.oC_Match().children.toString());
+            System.out.println("match: "+query.oC_Match().MATCH().toString());  //  Return MATCH easier.
+            executeMatchClause(query.oC_Match());
 
+            /*
             //  This loop aims to find the operator MATCH in the query.
             for (int j = 0; j  < query.oC_Match().getChildCount(); j ++)
             {
@@ -194,7 +205,7 @@ public class CypherWalker
                    // System.out.print("No MATCH");
                 }
 
-            }
+            }  */
 
 
         }
@@ -246,6 +257,138 @@ public class CypherWalker
 
         }
 
+
+    }
+
+    private void executeMatchClause(CypherParser.OC_MatchContext statement)
+    {
+        final CypherParser.OC_MatchContext query = statement;
+
+
+        if (query.oC_Pattern() != null)
+        {
+
+            System.out.println("OC Pattern: "+query.oC_Pattern().toString());
+            executePatternClause(query.oC_Pattern());
+
+        }
+
+        else if (query.oC_Where() != null)
+        {
+
+         System.out.print("Query OC WHERE - Placeholder");
+
+        }
+
+    }
+
+    private void executePatternClause(CypherParser.OC_PatternContext statement)
+    {
+
+        final CypherParser.OC_PatternContext query = statement;
+
+        for (int i = 0;  i < query.getChildCount(); i++)
+        {
+            if (query.oC_PatternPart(i) != null)
+            {
+                System.out.println("OC_PatternPart: "+query.oC_PatternPart(i).toString());
+                executePatternPartClause(query.oC_PatternPart(i));
+
+            }
+            else
+            {
+
+                System.out.println("Empty PatternClause");
+
+            }
+
+
+        }
+
+    }
+
+    private void executePatternPartClause(CypherParser.OC_PatternPartContext statement)
+    {
+        final CypherParser.OC_PatternPartContext query = statement;
+
+        if (query.oC_Variable() != null)
+        {
+
+            System.out.println("OC_Variable: "+query.oC_Variable().toString());
+
+        }
+
+        else if (query.oC_AnonymousPatternPart() != null)
+        {
+
+            System.out.println("OC_AnonymousPatternPart: "+ query.oC_AnonymousPatternPart().toString());
+            executeAnonymousPatternPartClause(query.oC_AnonymousPatternPart());
+
+        }
+
+
+    }
+
+    private void executeAnonymousPatternPartClause(CypherParser.OC_AnonymousPatternPartContext statement)
+    {
+
+        final CypherParser.OC_AnonymousPatternPartContext query = statement;
+
+        if (query.oC_PatternElement() != null)
+        {
+            System.out.println("OC_PatternElement: "+ query.oC_PatternElement().toString());
+
+        }
+
+        else
+        {
+
+            System.out.println("Empty AnonymousPatternPart");
+
+        }
+
+
+    }
+
+    private void executeReturnClause(CypherParser.OC_ReturnContext statement)
+    {
+        final CypherParser.OC_ReturnContext query = statement;
+
+        if (query.oC_ProjectionBody() !=  null)
+        {
+            System.out.println("OC_ProjectionBody:"+query.oC_ProjectionBody().toString());
+            executeProjectionBody(query.oC_ProjectionBody());
+
+
+        }
+
+    }
+
+    private void executeProjectionBody(CypherParser.OC_ProjectionBodyContext statement)
+    {
+
+        final CypherParser.OC_ProjectionBodyContext query = statement;
+
+        if(query.oC_Limit() !=  null)
+        {
+            System.out.println("OC_Limit:"+query.oC_Limit().toString());
+        }
+
+        else if (query.oC_ProjectionItems() != null)
+        {
+            System.out.println("OC_ProjectionItems:"+query.oC_ProjectionItems().toString());
+            System.out.print("OC_ProjectionItems CHILDREN:"+query.oC_ProjectionItems().children.toString());
+        }
+
+        else if(query.oC_Order() != null)
+        {
+            System.out.println("OC_Order:"+query.oC_Order().toString());
+        }
+        else if(query.oC_Skip() != null)
+        {
+            System.out.println("OC_Skip"+query.oC_Skip().toString());
+
+        }
 
     }
 
