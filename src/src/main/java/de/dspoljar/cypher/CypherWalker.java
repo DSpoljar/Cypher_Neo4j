@@ -145,6 +145,8 @@ public class CypherWalker
 
                 System.out.println("return:  "+query.oC_Return().RETURN().toString());  //  Return RETURN easier.
 
+
+
                 // System.out.println(query.oC_Return().oC_ProjectionBody().children.toString());  // Contains the blank space (?)
 
                 executeReturnClause(query.oC_Return());
@@ -337,6 +339,7 @@ public class CypherWalker
         if (query.oC_PatternElement() != null)
         {
             System.out.println("OC_PatternElement: "+ query.oC_PatternElement().toString());
+            executePatternElementClause(query.oC_PatternElement());
 
         }
 
@@ -349,6 +352,136 @@ public class CypherWalker
 
 
     }
+
+    private void executePatternElementClause(CypherParser.OC_PatternElementContext statement)
+    {
+
+        final CypherParser.OC_PatternElementContext query = statement;
+
+        if (query.oC_NodePattern() != null)
+        {
+
+            System.out.println("OC_NodePattern: "+ query.oC_NodePattern().toString());
+            executeNodePatternClause(query.oC_NodePattern());
+
+
+        }
+
+        else if (query.oC_PatternElement() != null)
+        {
+            System.out.println("OC_PatternElement: "+ query.oC_PatternElement().toString());
+            executePatternElementClause(query.oC_PatternElement());
+
+        }
+        else if (query.oC_PatternElementChain(0)  != null)
+        {
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+                System.out.println("OC_PatternElementChain: "+ query.oC_PatternElementChain(i).toString());
+
+            }
+
+        }
+
+    }
+
+    private void executeNodePatternClause(CypherParser.OC_NodePatternContext statement)
+    {
+        final CypherParser.OC_NodePatternContext query = statement;
+
+        if (query.oC_NodeLabels() !=  null)
+        {
+            System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString());
+            executeNodeLabelClause(query.oC_NodeLabels());
+
+
+        }
+        
+        else if (query.oC_Variable() != null)
+        {
+            System.out.println("OC_Variable:"+query.oC_Variable().toString());
+
+        }
+
+        else if (query.oC_Properties() != null)
+        {
+
+            System.out.println("OC_Properties:"+query.oC_Properties().toString());
+
+        }
+
+    }
+
+    private void executeNodeLabelClause(CypherParser.OC_NodeLabelsContext statement)
+    {
+        final CypherParser.OC_NodeLabelsContext query = statement;
+
+        if (query.oC_NodeLabel() != null)
+        {
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+                System.out.println("OC_NodeLabel: "+ query.oC_NodeLabel(i).toString());
+                executeLabelNameClause(query.oC_NodeLabel(i));
+
+            }
+        }
+
+    }
+
+    private void executeLabelNameClause(CypherParser.OC_NodeLabelContext statement)
+    {
+        final CypherParser.OC_NodeLabelContext query = statement;
+
+        if (query.oC_LabelName() != null)
+        {
+            System.out.println("OC_LabelName: "+ query.oC_LabelName().toString());
+            executeSchemaNameClause(query.oC_LabelName());
+
+        }
+
+    }
+
+    private void executeSchemaNameClause(CypherParser.OC_LabelNameContext statement)
+    {
+
+        final CypherParser.OC_LabelNameContext query = statement;
+
+        if (query.oC_SchemaName() != null)
+        {
+            System.out.println("OC_SchemaName: "+ query.oC_SchemaName().toString());
+            executeSymbolicWordClause(query.oC_SchemaName());
+
+        }
+
+
+
+    }
+
+    private void executeSymbolicWordClause(CypherParser.OC_SchemaNameContext statement)
+    {
+        final CypherParser.OC_SchemaNameContext query = statement;
+
+        if (query.oC_SymbolicName() != null)
+        {
+            System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
+            System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns the Label ("Gene") in the current example.
+
+
+        }
+        else if (query.oC_ReservedWord() != null)
+        {
+
+            System.out.println("OC_ReserveWord: "+ query.oC_ReservedWord().toString());
+
+        }
+
+
+
+    }
+
 
     private void executeReturnClause(CypherParser.OC_ReturnContext statement)
     {
@@ -376,8 +509,10 @@ public class CypherWalker
 
         else if (query.oC_ProjectionItems() != null)
         {
+
             System.out.println("OC_ProjectionItems:"+query.oC_ProjectionItems().toString());
-            System.out.print("OC_ProjectionItems CHILDREN:"+query.oC_ProjectionItems().children.toString());
+           // System.out.print("OC_ProjectionItems CHILDREN:"+query.oC_ProjectionItems().children.toString());
+            executeProjectionItemsClause(query.oC_ProjectionItems());
         }
 
         else if(query.oC_Order() != null)
@@ -387,6 +522,60 @@ public class CypherWalker
         else if(query.oC_Skip() != null)
         {
             System.out.println("OC_Skip"+query.oC_Skip().toString());
+
+        }
+
+    }
+
+    private void executeProjectionItemsClause(CypherParser.OC_ProjectionItemsContext statement)
+    {
+        final CypherParser.OC_ProjectionItemsContext query = statement;
+
+        for (int i = 0; i < query.getChildCount(); i++)
+        {
+            if (query.oC_ProjectionItem(i) !=  null)
+            {
+
+                System.out.println("OC_ProjectionItem_i:"+query.oC_ProjectionItem(i).toString());
+                executeVariableClause(query.oC_ProjectionItem(i));
+
+            }
+
+        }
+
+
+    }
+
+    private void executeVariableClause(CypherParser.OC_ProjectionItemContext statement)
+    {
+        final CypherParser.OC_ProjectionItemContext query = statement;
+
+        if (query.oC_Variable() != null)
+        {
+
+            System.out.print("OC_Variable:"+query.oC_Variable().toString());
+            //TODO: Execute variable
+
+        }
+
+        else if (query.oC_Expression() != null)
+        {
+
+            System.out.print("OC_Expression:"+query.oC_Expression().toString());
+            executeOrExpressionClause(query.oC_Expression());
+
+        }
+
+    }
+
+    private void executeOrExpressionClause(CypherParser.OC_ExpressionContext statement)
+    {
+        final CypherParser.OC_ExpressionContext query = statement;
+
+        if (query.oC_OrExpression() != null)
+        {
+
+            System.out.print("OC_ORExpression:"+query.oC_OrExpression().toString());
 
         }
 
@@ -422,53 +611,6 @@ public class CypherWalker
 
     }
 
-
-
-
-    // Experimental function.
-
-    private String returnLabel(final CypherParser.OC_StatementContext statement)
-    {
-        String label =  "";
-
-
-            System.out.println(statement.oC_Query());
-            label  =
-                    statement.oC_Query()
-                             .oC_RegularQuery()
-                             .oC_SingleQuery()
-                             .oC_SinglePartQuery().oC_UpdatingClause(0)
-                             .toString();
-                             /*
-                             .oC_Create()
-                             .oC_Pattern()
-                             .oC_PatternPart(i)
-                             .oC_AnonymousPatternPart()
-                             .oC_PatternElement()
-                             .oC_NodePattern()
-                             .oC_Properties()
-                             .oC_MapLiteral()
-                             .oC_Expression(i)
-                             .oC_OrExpression()
-                             .oC_XorExpression(i)
-                             .oC_AndExpression(i)
-                             .oC_NotExpression(i)
-                             .oC_ComparisonExpression()
-                             .oC_AddOrSubtractExpression()
-                             .oC_MultiplyDivideModuloExpression(i)
-                             .oC_PowerOfExpression(i)
-                             .oC_UnaryAddOrSubtractExpression(i)
-                             .oC_StringListNullOperatorExpression()
-                             .oC_PropertyOrLabelsExpression()
-                             .oC_Atom()
-                             .oC_Literal().toString(); */
-
-            System.out.println(label);
-
-
-    return label;
-
-    }
 
 
     /*
