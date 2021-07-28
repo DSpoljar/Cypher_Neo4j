@@ -576,11 +576,253 @@ public class CypherWalker
         {
 
             System.out.print("OC_ORExpression:"+query.oC_OrExpression().toString());
+            executeXorExpressionClause(query.oC_OrExpression());
 
         }
 
     }
 
+    private void executeXorExpressionClause(CypherParser.OC_OrExpressionContext statement)
+    {
+
+        final CypherParser.OC_OrExpressionContext query = statement;
+
+        for (int i = 0; i < query.getChildCount();  i++)
+        {
+
+            if (query.oC_XorExpression(i) !=  null)
+            {
+                System.out.print("OC_XoRExpression:"+query.oC_XorExpression(i).toString());
+                executeAndExpressionClause(query.oC_XorExpression(i));
+
+            }
+
+
+        }
+
+
+    }
+
+    private void executeAndExpressionClause(CypherParser.OC_XorExpressionContext statement)
+    {
+
+        final CypherParser.OC_XorExpressionContext query = statement;
+
+        for (int i = 0; i < query.getChildCount();  i++)
+        {
+
+            if (query.oC_AndExpression(i) !=  null)
+            {
+                System.out.print("OC_AndExpression:"+query.oC_AndExpression(i).toString());
+                executeNotExpressionClause(query.oC_AndExpression(i));
+
+            }
+
+
+        }
+
+    }
+
+    private void executeNotExpressionClause(CypherParser.OC_AndExpressionContext statement)
+    {
+
+        final CypherParser.OC_AndExpressionContext query = statement;
+
+        for (int i = 0; i < query.getChildCount();  i++)
+        {
+
+            if (query.oC_NotExpression(i) !=  null)
+            {
+                System.out.print("OC_NotExpression:"+query.oC_NotExpression(i).toString());
+                executeComparisonExpressionClause(query.oC_NotExpression(i));
+
+            }
+
+
+        }
+
+    }
+
+    private void executeComparisonExpressionClause(CypherParser.OC_NotExpressionContext statement)
+    {
+
+        final CypherParser.OC_NotExpressionContext query = statement;
+
+
+            if (query.oC_ComparisonExpression() != null)
+            {
+                System.out.print("OC_ComparisonExpression:"+query.oC_ComparisonExpression().toString());
+                executeAddOrSubtractExpressionClause(query.oC_ComparisonExpression());
+
+            }
+
+    }
+
+    private void executeAddOrSubtractExpressionClause(CypherParser.OC_ComparisonExpressionContext statement)
+    {
+
+        final CypherParser.OC_ComparisonExpressionContext query = statement;
+
+
+        if (query.oC_AddOrSubtractExpression() != null)
+        {
+
+            System.out.print("OC_AddOrSubtractExpression:"+query.oC_AddOrSubtractExpression().toString());
+            executeMultiplyDivideModuloExpressionClause(query.oC_AddOrSubtractExpression());
+
+        }
+
+        else if (query.oC_PartialComparisonExpression(0) != null)
+        {
+         //   TODO: Usual stuff later
+        }
+
+    }
+
+    private void executeMultiplyDivideModuloExpressionClause(CypherParser.OC_AddOrSubtractExpressionContext statement)
+    {
+
+        final CypherParser.OC_AddOrSubtractExpressionContext query = statement;
+
+        for (int i= 0; i < query.getChildCount(); i++)
+        {
+
+            if (query.oC_MultiplyDivideModuloExpression(i) !=  null)
+            {
+
+                System.out.print("OC_MultiplyDivideModulo:"+query.oC_MultiplyDivideModuloExpression(i).toString());
+                executePowerOfExpressionClause(query.oC_MultiplyDivideModuloExpression(i));
+
+            }
+
+        }
+
+    }
+
+    private void executePowerOfExpressionClause(CypherParser.OC_MultiplyDivideModuloExpressionContext statement)
+    {
+
+        final CypherParser.OC_MultiplyDivideModuloExpressionContext query = statement;
+
+        for (int i= 0; i < query.getChildCount(); i++)
+        {
+
+            if (query.oC_PowerOfExpression(i) !=  null)
+            {
+
+                System.out.print("OC_PowerOf:"+query.oC_PowerOfExpression(i).toString());
+                executeUnaryAddOrSubtractExpressionClause(query.oC_PowerOfExpression(i));
+
+            }
+
+        }
+
+    }
+
+    private void executeUnaryAddOrSubtractExpressionClause(CypherParser.OC_PowerOfExpressionContext statement)
+    {
+
+        final CypherParser.OC_PowerOfExpressionContext query = statement;
+
+        for (int i= 0; i < query.getChildCount(); i++)
+        {
+
+            if (query.oC_UnaryAddOrSubtractExpression(i) !=  null)
+            {
+
+                System.out.print("OC_UnaryAddOrSubtractExpression:"+query.oC_UnaryAddOrSubtractExpression(i).toString());
+                executeStringListNullOperatorExpressionClause(query.oC_UnaryAddOrSubtractExpression(i));
+
+            }
+
+        }
+
+    }
+
+    private void executeStringListNullOperatorExpressionClause(CypherParser.OC_UnaryAddOrSubtractExpressionContext statement)
+    {
+
+        final CypherParser.OC_UnaryAddOrSubtractExpressionContext query = statement;
+
+
+            if (query.oC_StringListNullOperatorExpression() !=  null)
+            {
+
+                System.out.print("OC_StringListNullOperatorExpression():"+query.oC_StringListNullOperatorExpression().toString());
+                executePropertyOrLabelspressionClause(query.oC_StringListNullOperatorExpression());
+
+            }
+
+
+    }
+
+    private void executePropertyOrLabelspressionClause(CypherParser.OC_StringListNullOperatorExpressionContext statement)
+    {
+
+        final CypherParser.OC_StringListNullOperatorExpressionContext query = statement;
+
+
+        if (query.oC_PropertyOrLabelsExpression() !=  null)
+        {
+
+            System.out.print("OC_PropertyOrLabelExpression():"+query.oC_PropertyOrLabelsExpression().toString());
+            executeAtomClause(query.oC_PropertyOrLabelsExpression());
+
+        }
+
+        // TODO: Other else ifs.
+
+
+    }
+
+    private void executeAtomClause(CypherParser.OC_PropertyOrLabelsExpressionContext statement)
+    {
+
+        final CypherParser.OC_PropertyOrLabelsExpressionContext query = statement;
+
+
+        if (query.oC_Atom() !=  null)
+        {
+
+            System.out.print("Oc_AtomExpression():"+query.oC_Atom().toString());
+            executeLiteralClause(query.oC_Atom());
+
+        }
+        else if (query.oC_NodeLabels() != null)
+        {
+            System.out.println("OC_NodeLabels  (executeAtom): "+query.oC_NodeLabels().toString());
+
+        }
+
+        // TODO: Other else ifs.
+
+
+    }
+
+    // Can extract variable  ("n"  here)!
+    
+    private void executeLiteralClause(CypherParser.OC_AtomContext statement)
+    {
+
+        final CypherParser.OC_AtomContext query = statement;
+
+
+        if (query.oC_Literal()!=  null)
+        {
+
+            System.out.print("Oc_Literal()_VARIABLE:"+query.oC_Literal().children.toString());
+
+        }
+        else if (query.oC_Variable() != null)
+        {
+            System.out.print("Oc_Variable()_VARIABLE:"+query.oC_Variable().children.toString());
+            System.out.print("Oc_SymbolicName_VARIABLE:"+query.oC_Variable().oC_SymbolicName().children.toString());  // <-- VARIABLE N STORED HERE !!
+        }
+
+        // TODO: Other else ifs.
+
+
+    }
 
     // Experimental function.
 
