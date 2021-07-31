@@ -23,7 +23,10 @@ class CypherWalkerTest
 
         CypherWalker testWalker = new CypherWalker();
 
-        testWalker.acceptQuery(g, "MATCH (n:Gene) RETURN n");
+        CypherExtractor extractor = new CypherExtractor();
+
+        testWalker.acceptQuery(g, "MATCH (n:Gene) RETURN n", extractor);
+
 
 
 
