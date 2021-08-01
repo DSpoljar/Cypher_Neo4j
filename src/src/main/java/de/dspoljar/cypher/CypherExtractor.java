@@ -5,6 +5,9 @@ import java.util.Arrays;
 public class CypherExtractor
 {
 
+    public String[] labelStorage = new String[2];
+    public String[] variableStorage = new String[2];
+
     public CypherExtractor()
     {
 
@@ -14,11 +17,11 @@ public class CypherExtractor
     public String[] saveLabels(String label)
     {
 
-        String[] storage = new String[2]; // Only 2 for testing purposes.
 
-        storage[0] = label;
 
-        return storage;
+        this.labelStorage[0]= label;
+
+        return this.labelStorage;
 
 
     }
@@ -26,11 +29,11 @@ public class CypherExtractor
     public String[] saveVariables(String variable)
     {
 
-        String[] storage = new String[2]; // Only 2 for testing purposes.
 
-        storage[0] = variable;
 
-        return storage;
+        this.variableStorage[0] = variable;
+
+        return this.variableStorage;
 
 
     }

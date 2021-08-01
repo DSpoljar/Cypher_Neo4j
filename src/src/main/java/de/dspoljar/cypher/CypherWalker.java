@@ -164,6 +164,10 @@ public class CypherWalker
 
         }
 
+        // Testing variable saving ...
+        System.out.print(this.extractor.labelStorage[0]);
+        System.out.print(this.extractor.variableStorage[0]);
+
 
     }
 
