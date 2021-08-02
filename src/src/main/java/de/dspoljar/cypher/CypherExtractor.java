@@ -1,39 +1,61 @@
 package de.dspoljar.cypher;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class CypherExtractor
 {
 
-    public String[] labelStorage = new String[2];
-    public String[] variableStorage = new String[2];
+    List<String> labelStorage = new ArrayList<String>();
+    List<String> variableStorage = new ArrayList<String>();
 
     public CypherExtractor()
     {
 
-
     }
 
-    public String[] saveLabels(String label)
+    public List<String> saveLabels(String label)
     {
 
 
 
-        this.labelStorage[0]= label;
+        this.labelStorage.add(label);
 
         return this.labelStorage;
 
 
     }
 
-    public String[] saveVariables(String variable)
+    public List<String> saveVariables(String variable)
     {
 
 
 
-        this.variableStorage[0] = variable;
+        this.variableStorage.add(variable);
 
         return this.variableStorage;
+
+
+    }
+
+    public class HashMapper extends CypherExtractor
+    {
+
+        public HashMapper()
+        {
+            super();
+        }
+
+        HashMap<String, String> nodesLabels = new HashMap<String, String>();
+
+
+        public void mapper(String node, String variable)
+        {
+
+            this.nodesLabels.put(node, variable);
+
+
+        }
+
 
 
     }

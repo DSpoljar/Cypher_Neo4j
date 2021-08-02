@@ -79,13 +79,14 @@ public class CypherWalker
 
         if (query.oC_StandaloneCall() != null)
         {
-            System.out.println("OC_StandaloneCall:"+query.oC_StandaloneCall());
+          //  System.out.println("OC_StandaloneCall:"+query.oC_StandaloneCall());
             query.oC_StandaloneCall();
         }
         else if (query.oC_RegularQuery() != null)
         {
-            executeSingleQuery(query.oC_RegularQuery());
-            System.out.println("OC_RegQuery:"+query.oC_RegularQuery());
+            executeSingleMultipleQuery(query.oC_RegularQuery());
+         ///   System.out.println("OC_RegQuery:"+query.oC_RegularQuery());
+
         }
 
 
@@ -93,7 +94,7 @@ public class CypherWalker
 
 
 
-    private void executeSingleQuery(CypherParser.OC_RegularQueryContext statement)
+    private void executeSingleMultipleQuery(CypherParser.OC_RegularQueryContext statement)
     {
 
         final CypherParser.OC_SingleQueryContext query = statement.oC_SingleQuery();
@@ -106,7 +107,14 @@ public class CypherWalker
 
         }
 
-        // TODO: Add if MultiPartQuery later!
+        else if (query.oC_MultiPartQuery() != null)
+        {
+
+          //  System.out.println("OC_MultiPartQuery:"+query.oC_MultiPartQuery().toString());
+
+        }
+
+
 
 
 
@@ -141,7 +149,6 @@ public class CypherWalker
             else if(query.oC_Return() != null)
             {
 
-            //    System.out.println("OC_Return:"+query.oC_Return().toString());
 
           //      System.out.println("return:  "+query.oC_Return().RETURN().toString());  //  Return RETURN easier.
 
@@ -165,8 +172,8 @@ public class CypherWalker
         }
 
         // Testing variable saving ...
-        System.out.print(this.extractor.labelStorage[0]);
-        System.out.print(this.extractor.variableStorage[0]);
+        System.out.print(this.extractor.labelStorage.toString());
+        System.out.print(this.extractor.variableStorage.toString());
 
 
     }
@@ -178,25 +185,11 @@ public class CypherWalker
         if (query.oC_Match() != null)
         {
 
-            System.out.println("OC_Match (Reading):"+query.oC_Match().toString());
+          //  System.out.println("OC_Match (Reading):"+query.oC_Match().toString());
             //System.out.println("Returns CHILDREN:"+query.oC_Match().children.toString());
-            System.out.println("match: "+query.oC_Match().MATCH().toString());  //  Return MATCH easier.
+          //  System.out.println("match: "+query.oC_Match().MATCH().toString());  //  Return MATCH easier.
             executeMatchClause(query.oC_Match());
 
-            /*
-            //  This loop aims to find the operator MATCH in the query.
-            for (int j = 0; j  < query.oC_Match().getChildCount(); j ++)
-            {
-                if (query.oC_Match().getChild(j).toString().startsWith("MATCH"))
-                {
-                    System.out.println("Return MATCH: "+query.oC_Match().getChild(j).toString());  // Here, we return  the MATCH OPERATOR!
-                }
-                else
-                {
-                   // System.out.print("No MATCH");
-                }
-
-            }  */
 
 
         }
@@ -510,11 +503,11 @@ public class CypherWalker
 
         else if(query.oC_Order() != null)
         {
-            System.out.println("OC_Order:"+query.oC_Order().toString());
+            // System.out.println("OC_Order:"+query.oC_Order().toString());
         }
         else if(query.oC_Skip() != null)
         {
-            System.out.println("OC_Skip"+query.oC_Skip().toString());
+          //  System.out.println("OC_Skip"+query.oC_Skip().toString());
 
         }
 
@@ -546,7 +539,7 @@ public class CypherWalker
         if (query.oC_Variable() != null)
         {
 
-            System.out.print("OC_Variable:"+query.oC_Variable().toString());
+           // System.out.print("OC_Variable:"+query.oC_Variable().toString());
             //TODO: Execute variable
 
         }
@@ -781,7 +774,7 @@ public class CypherWalker
         {
 
            // System.out.print("Oc_AtomExpression():"+query.oC_Atom().toString());
-            executeLiteralClause(query.oC_Atom());
+            executeAtomContextClause(query.oC_Atom());
 
         }
         else if (query.oC_NodeLabels() != null)
@@ -790,14 +783,24 @@ public class CypherWalker
 
         }
 
-        // TODO: Other else ifs.
+        else if (query.oC_PropertyLookup(0) != null)
+        {
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+                System.out.println("OC_PropertyLookup: "+query.oC_PropertyLookup(i));
+
+            }
+
+        }
 
 
     }
 
     // Can extract variable  ("n"  here)!
 
-    private void executeLiteralClause(CypherParser.OC_AtomContext statement)
+    private void executeAtomContextClause(CypherParser.OC_AtomContext statement)
     {
 
         final CypherParser.OC_AtomContext query = statement;
@@ -813,7 +816,7 @@ public class CypherWalker
         {
             // System.out.print("Oc_Variable()_VARIABLE:"+query.oC_Variable().children.toString());
             // System.out.print("Oc_SymbolicName_VARIABLE:"+query.oC_Variable().oC_SymbolicName().children.toString());  // <-- VARIABLE N STORED HERE !!
-            System.out.println(query.oC_Variable().oC_SymbolicName().children.get(0).toString());
+           // System.out.println(query.oC_Variable().oC_SymbolicName().children.get(0).toString());
             this.extractor.saveVariables(query.oC_Variable().oC_SymbolicName().children.get(0).toString());
 
         }
@@ -822,36 +825,6 @@ public class CypherWalker
 
 
     }
-
-    // Experimental function.
-
-    private void returnSymbolicName(final CypherParser.OC_StatementContext statement)
-    {
-
-        String label = "";
-
-        System.out.println(statement.oC_Query());
-        label  = statement.oC_Query()
-                          .oC_RegularQuery()
-                          .oC_SingleQuery()
-                         .oC_SinglePartQuery()
-                          .oC_ReadingClause(0)
-                          .oC_Match()
-                          .oC_Pattern()
-                          .oC_PatternPart(0)
-                          .oC_AnonymousPatternPart()
-                          .oC_PatternElement()
-                          .oC_NodePattern()
-                          .oC_NodeLabels()
-                          .oC_NodeLabel(0)
-                          .oC_LabelName()
-                          .oC_SchemaName().oC_SymbolicName()
-                          .toString();
-        System.out.println("TESTING"+label+"\n");
-
-
-    }
-
 
 
     /*
