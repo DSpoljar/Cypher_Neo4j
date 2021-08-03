@@ -37,27 +37,30 @@ public class CypherExtractor
 
     }
 
-    public class HashMapper extends CypherExtractor
+    public class HashMapper
     {
+        HashMap<String, String> nodesLabels = new HashMap<String, String>();
+
 
         public HashMapper()
         {
             super();
         }
 
-        HashMap<String, String> nodesLabels = new HashMap<String, String>();
-
 
         public void mapper(String node, String variable)
         {
+
 
             this.nodesLabels.put(node, variable);
 
 
         }
 
-
-
+        public HashMap<String, String> getNodesLabels()
+        {
+            return nodesLabels;
+        }
     }
 
 
