@@ -36,7 +36,7 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node node = g.addNode("Gene");
-        node.setProperty("test", "Hello");
+        node.setProperty("n", "IL10");
         g.update(node);
         // node = g.findNode("Gene", "test", "Hello");
 

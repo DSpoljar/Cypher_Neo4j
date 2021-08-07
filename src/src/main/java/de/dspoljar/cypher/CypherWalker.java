@@ -115,7 +115,8 @@ public class CypherWalker
         else if (query.oC_MultiPartQuery() != null)
         {
 
-          //  System.out.println("OC_MultiPartQuery:"+query.oC_MultiPartQuery().toString());
+            System.out.println("OC_MultiPartQuery:"+query.oC_MultiPartQuery().toString());
+            executeMultiPartQuery(query.oC_MultiPartQuery());
 
         }
 
@@ -163,8 +164,6 @@ public class CypherWalker
 
 
 
-
-
             }
 
             else
@@ -182,6 +181,48 @@ public class CypherWalker
 
 
     }
+
+    private void executeMultiPartQuery(CypherParser.OC_MultiPartQueryContext statement)
+    {
+
+        final CypherParser.OC_MultiPartQueryContext query = statement;
+
+        if (query.oC_ReadingClause(0) != null)
+        {
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+                executeReadingClause(query.oC_ReadingClause(i));
+
+            }
+
+        }
+
+        else if (query.oC_SinglePartQuery() != null)
+        {
+
+            executeSinglePartQuery(query.oC_SinglePartQuery());
+
+        }
+
+        else if (query.oC_UpdatingClause(0) != null)
+        {
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+                executeUpdatingClause(query.oC_UpdatingClause(i));
+
+            }
+
+        }
+
+        else if (query.oC_With(0) != null)
+        {
+
+        }
+
+    }
+
+
 
     private void executeReadingClause(CypherParser.OC_ReadingClauseContext statement)
     {
@@ -549,7 +590,8 @@ public class CypherWalker
         {
 
            // System.out.print("OC_Variable:"+query.oC_Variable().toString());
-            //TODO: Execute variable
+            executeVariableClause(query.oC_Variable());
+
 
         }
 
@@ -562,6 +604,8 @@ public class CypherWalker
         }
 
     }
+
+
 
     private void executeOrExpressionContext(CypherParser.OC_ExpressionContext statement)
     {
@@ -768,8 +812,24 @@ public class CypherWalker
 
         }
 
+        else if (query.oC_ListOperatorExpression(0) != null)
+        {
 
-        // TODO: Other else ifs.
+        }
+
+        else if (query.oC_NullOperatorExpression(0) != null)
+        {
+
+        }
+
+        else if (query.oC_StringOperatorExpression(0) != null )
+        {
+
+        }
+
+
+
+
 
 
     }
@@ -823,6 +883,7 @@ public class CypherWalker
 
          //   System.out.print("Oc_Literal()_VARIABLE:"+query.oC_Literal().children.toString());
 
+
         }
         else if (query.oC_Variable() != null)
         {
@@ -839,8 +900,57 @@ public class CypherWalker
 
         }
 
-        // TODO: Other else ifs.
+        else if (query.oC_CaseExpression() != null)
+        {
 
+        }
+
+        else if (query.oC_FilterExpression() != null)
+        {
+
+        }
+
+        else if (query.oC_Parameter() != null)
+        {
+
+        }
+
+        else if (query.oC_FunctionInvocation() != null)
+        {
+
+        }
+
+        else if (query.oC_ListComprehension() != null)
+        {
+
+        }
+
+        else if (query.oC_ParenthesizedExpression() != null)
+        {
+
+            System.out.println("OC_ParenthesizedExpression");
+            executeParenthesizedExpressionContext(query.oC_ParenthesizedExpression());
+
+        }
+
+        else if (query.oC_PatternComprehension() != null)
+        {
+
+        }
+
+        else if (query.oC_RelationshipsPattern() != null)
+        {
+
+        }
+
+
+
+
+    }
+
+    private void executeParenthesizedExpressionContext(CypherParser.OC_ParenthesizedExpressionContext statement)
+    {
+        final CypherParser.OC_ParenthesizedExpressionContext query = statement;
 
     }
 
@@ -856,8 +966,6 @@ public class CypherWalker
             String variable = query.oC_SymbolicName().children.get(0).toString();
             this.extractor.saveVariables(variable); // Saving variable "N"
             this.hashCollector.mapper(node, variable);
-
-
 
 
 
