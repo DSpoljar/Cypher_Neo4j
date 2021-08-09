@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 
 import javax.swing.*;
+import java.util.Collections;
+import java.util.List;
 
 
 public class CypherWalker
@@ -71,10 +73,11 @@ public class CypherWalker
 
 
         // Testing variable saving ...
-        System.out.print(this.extractor.labelStorage.toString());
-        System.out.print(this.extractor.variableStorage.toString());
+        System.out.print(this.extractor.labelStorage.toString()+"\n");
+        System.out.print(this.extractor.variableStorage.toString()+"\n");
         // Testing hashing etc.
-        System.out.println(this.hashCollector.getNodesLabels());
+        System.out.println(this.hashCollector.getNodesLabels()+"\n");
+        System.out.println(this.hashCollector.getVariableOutOfList(this.extractor.variableStorage, "p")+"\n"); // Returns variable
 
     }
 
@@ -218,6 +221,14 @@ public class CypherWalker
         else if (query.oC_With(0) != null)
         {
 
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+                executeWhithClause(query.oC_With(i));
+
+            }
+
+
+
         }
 
     }
@@ -290,6 +301,52 @@ public class CypherWalker
 
     }
 
+    private void executeWhithClause(CypherParser.OC_WithContext statement)
+    {
+        final CypherParser.OC_WithContext query = statement;
+
+        if (query.oC_ProjectionBody() != null)
+        {
+
+            executeProjectionBody(query.oC_ProjectionBody());
+
+        }
+
+        else if (query.oC_Where() != null)
+        {
+
+            executeWhereClause(query.oC_Where());
+
+        }
+
+    }
+
+    private void executeWhereClause(CypherParser.OC_WhereContext statement)
+    {
+        final CypherParser.OC_WhereContext query = statement;
+
+        if (query.oC_Expression() != null)
+        {
+            executeExpressionClause(query.oC_Expression());
+
+        }
+
+    }
+
+    private void executeExpressionClause(CypherParser.OC_ExpressionContext statement)
+    {
+        final CypherParser.OC_ExpressionContext query = statement;
+
+        if (query.oC_OrExpression() != null)
+        {
+
+            executeOrExpressionClause(query.oC_OrExpression());
+
+        }
+
+
+    }
+
     private void executeMatchClause(CypherParser.OC_MatchContext statement)
     {
         final CypherParser.OC_MatchContext query = statement;
@@ -306,7 +363,7 @@ public class CypherWalker
         else if (query.oC_Where() != null)
         {
 
-       //  System.out.print("Query OC WHERE - Placeholder");
+          executeWhereClause(query.oC_Where());
 
         }
 
@@ -429,7 +486,9 @@ public class CypherWalker
         
         else if (query.oC_Variable() != null)
         {
+
        //     System.out.println("OC_Variable:"+query.oC_Variable().toString());
+            executeVariableClause(query.oC_Variable());
 
         }
 

@@ -41,6 +41,8 @@ public class CypherExtractor
     {
         HashMap<String, String> nodesLabels = new HashMap<String, String>();
 
+        List<String> variableList = new ArrayList<String>();
+
 
         public HashMapper()
         {
@@ -53,6 +55,7 @@ public class CypherExtractor
 
 
             this.nodesLabels.put(node, variable);
+            this.variableList.add(variable);
 
 
         }
@@ -61,6 +64,25 @@ public class CypherExtractor
         {
             return nodesLabels;
         }
+
+        public String getVariableOutOfList(List<String> variableList, String variable)
+        {
+
+            if (variableList.contains(variable))
+            {
+
+                return variable;
+
+            }
+            else
+            {
+
+                return "Variable not in list";
+
+            }
+
+        }
+
     }
 
 
