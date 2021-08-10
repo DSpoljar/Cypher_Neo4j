@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class CypherWalker
 
      CypherExtractor extractor = new CypherExtractor();
      CypherExtractor.HashMapper hashCollector = extractor.new HashMapper();
+
+    final List<String> executeVariableClauseList = new ArrayList<String>();
 
 
     public CypherWalker()
@@ -46,6 +49,7 @@ public class CypherWalker
         final CypherParser.OC_CypherContext context = cyphPars.oC_Cypher();
 
         this.extractor = extractor;
+
 
         // System.out.print(context.toString());
 
@@ -78,6 +82,8 @@ public class CypherWalker
         // Testing hashing etc.
         System.out.println(this.hashCollector.getNodesLabels()+"\n");
         System.out.println(this.hashCollector.getVariableOutOfList(this.extractor.variableStorage, "p")+"\n"); // Returns variable
+
+        System.out.println(this.hashCollector.getVariableCollector());
 
     }
 
@@ -325,6 +331,8 @@ public class CypherWalker
     {
         final CypherParser.OC_WhereContext query = statement;
 
+        final String node = "WHERE_CLAUSE";
+
         if (query.oC_Expression() != null)
         {
             executeExpressionClause(query.oC_Expression());
@@ -535,6 +543,8 @@ public class CypherWalker
     {
 
         final CypherParser.OC_LabelNameContext query = statement;
+
+        final String node = "LABEL_NAME_CLAUSE";
 
         if (query.oC_SchemaName() != null)
         {
@@ -1019,10 +1029,20 @@ public class CypherWalker
 
         final String node = "VARIABLE_CLAUSE";
 
+
         if (query.oC_SymbolicName() != null)
         {
 
+
             String variable = query.oC_SymbolicName().children.get(0).toString();
+            System.out.print("var:"+variable);
+
+            if (!executeVariableClauseList.contains(variable))
+            {
+                executeVariableClauseList.add(variable);
+            }
+
+            this.hashCollector.variableCollector.put(node, executeVariableClauseList);
             this.extractor.saveVariables(variable); // Saving variable "N"
             this.hashCollector.mapper(node, variable);
 

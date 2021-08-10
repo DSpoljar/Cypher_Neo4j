@@ -39,9 +39,11 @@ public class CypherExtractor
 
     public class HashMapper
     {
-        HashMap<String, String> nodesLabels = new HashMap<String, String>();
+        public HashMap<String, String> nodesLabels = new HashMap<String, String>();
 
-        List<String> variableList = new ArrayList<String>();
+        public List<String> variableList = new ArrayList<String>();
+
+        public HashMap<String, List<String>> variableCollector = new HashMap<String, List<String>>();
 
 
         public HashMapper()
@@ -58,6 +60,19 @@ public class CypherExtractor
             this.variableList.add(variable);
 
 
+        }
+
+        public void variableMapper(String node, List<String> variables)
+        {
+
+            // TODO: Experimental
+
+
+        }
+
+        public HashMap<String, List<String>> getVariableCollector()
+        {
+            return variableCollector;
         }
 
         public HashMap<String, String> getNodesLabels()
