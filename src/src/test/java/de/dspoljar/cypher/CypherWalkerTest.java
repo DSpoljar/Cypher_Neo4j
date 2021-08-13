@@ -19,13 +19,15 @@ class CypherWalkerTest
         Node node = g.addNode("Gene");
         node.setProperty("test", "Hello");
         g.update(node);
-       // node = g.findNode("Gene", "test", "Hello");
+
 
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
         testWalker.acceptQuery(g, "MATCH (n:Gene) RETURN n", extractor);
+
+        node = g.findNode("Gene", "test", "n");
 
 
     }
@@ -36,7 +38,7 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node node = g.addNode("Gene");
-        node.setProperty("n", "IL10");
+        node.setProperty("symbol", "IL10");
         g.update(node);
         // node = g.findNode("Gene", "test", "Hello");
 
@@ -44,7 +46,7 @@ class CypherWalkerTest
 
         CypherExtractor extractor = new CypherExtractor();
 
-        testWalker.acceptQuery(g, "MATCH (n:Gene {\"symbol\": \"IL10\"})", extractor);
+        testWalker.acceptQuery(g, "MATCH (n:Gene {symbol: \"IL10\"}) RETURN n", extractor);
 
 
     }
@@ -54,11 +56,10 @@ class CypherWalkerTest
     {
 
         final Graph g = Graph.createTempGraph();
-        Node node = g.addNode("Gene");
-        node.setProperty("p", "Protein");
-        node.setProperty("g", "Gene");
-        node.setProperty("r", "CODES_FOR");
-        g.update(node);
+        Node n = g.addNode("Gene");
+        Node p = g.addNode("Protein");
+        g.addEdge(n, p, "CODES_FOR");
+
         // node = g.findNode("Gene", "test", "Hello");
 
         CypherWalker testWalker = new CypherWalker();
@@ -71,11 +72,19 @@ class CypherWalkerTest
     }
 
     @Test
-    public void matchExtendedLabel() throws IOException
+    public void matchWhereQuery() throws IOException
     {
 
-    // TODO: Later.
+        final Graph g = Graph.createTempGraph();
+        Node n = g.addNode("Gene");
 
+        // node = g.findNode("Gene", "test", "Hello");
+
+        CypherWalker testWalker = new CypherWalker();
+
+        CypherExtractor extractor = new CypherExtractor();
+
+        testWalker.acceptQuery(g, "MATCH (n:Gene) WHERE n.GENE CONTAINS 'e' RETURN n.name", extractor);
     }
 
 

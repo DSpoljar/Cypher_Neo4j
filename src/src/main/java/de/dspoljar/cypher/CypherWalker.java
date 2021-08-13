@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,13 +52,14 @@ public class CypherWalker
         this.extractor = extractor;
 
 
-        // System.out.print(context.toString());
+     //    System.out.print(context.children.toString());
 
         for(int i = 0; i < context.getChildCount(); i++)
         {
 
 
             final ParseTree tree = context.getChild(i);
+           // System.out.println(tree.toStringTree());
 
            // System.out.println(context.getChildCount());
 
@@ -267,7 +269,7 @@ public class CypherWalker
         else if(query.oC_InQueryCall() != null)
         {
 
-        //    System.out.println("OC_InQueryCall (Reading):"+query.oC_InQueryCall().toString());
+            System.out.println("OC_InQueryCall (Reading):"+query.oC_InQueryCall().toString());
 
         }
 
@@ -300,7 +302,7 @@ public class CypherWalker
         else if (query.oC_Set() != null)
         {
 
-        //    System.out.println("OC_Set:"+query.oC_Set().toString());
+            System.out.println("OC_Set:"+query.oC_Set().toString());
 
         }
 
@@ -363,7 +365,7 @@ public class CypherWalker
         if (query.oC_Pattern() != null)
         {
 
-         //   System.out.println("OC Pattern: "+query.oC_Pattern().toString());
+            System.out.println("OC Pattern: "+query.oC_Pattern().toString());
             executePatternClause(query.oC_Pattern());
 
         }
@@ -386,16 +388,11 @@ public class CypherWalker
         {
             if (query.oC_PatternPart(i) != null)
             {
-            //    System.out.println("OC_PatternPart: "+query.oC_PatternPart(i).toString());
+                System.out.println("OC_PatternPart: "+query.oC_PatternPart(i).toString());
                 executePatternPartClause(query.oC_PatternPart(i));
 
             }
-            else
-            {
 
-            //    System.out.println("Empty PatternClause");
-
-            }
 
 
         }
@@ -416,7 +413,7 @@ public class CypherWalker
         else if (query.oC_AnonymousPatternPart() != null)
         {
 
-         //   System.out.println("OC_AnonymousPatternPart: "+ query.oC_AnonymousPatternPart().toString());
+            System.out.println("OC_AnonymousPatternPart: "+ query.oC_AnonymousPatternPart().toString());
             executeAnonymousPatternPartClause(query.oC_AnonymousPatternPart());
 
         }
@@ -436,12 +433,7 @@ public class CypherWalker
 
         }
 
-        else
-        {
 
-        //    System.out.println("Empty AnonymousPatternPart");
-
-        }
 
 
     }
@@ -454,8 +446,8 @@ public class CypherWalker
         if (query.oC_NodePattern() != null)
         {
 
-        //    System.out.println("OC_NodePattern: "+ query.oC_NodePattern().toString());
-            executeNodePatternClause(query.oC_NodePattern());
+          System.out.println("OC_NodePattern: "+ query.oC_NodePattern().children.toString());
+          executeNodePatternClause(query.oC_NodePattern());
 
 
         }
@@ -473,10 +465,29 @@ public class CypherWalker
             {
 
             //    System.out.println("OC_PatternElementChain: "+ query.oC_PatternElementChain(i).toString());
+                executePatternElementChain(query.oC_PatternElementChain(i));
 
             }
 
         }
+
+    }
+
+    private void executePatternElementChain(CypherParser.OC_PatternElementChainContext statement)
+    {
+        final CypherParser.OC_PatternElementChainContext query = statement;
+
+        if (query.oC_NodePattern() != null)
+        {
+            executeNodePatternClause(query.oC_NodePattern());
+        }
+
+        else if (query.oC_RelationshipPattern() != null)
+        {
+
+
+        }
+
 
     }
 
@@ -486,7 +497,7 @@ public class CypherWalker
 
         if (query.oC_NodeLabels() !=  null)
         {
-        //    System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString());
+            // System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString());
             executeNodeLabelClause(query.oC_NodeLabels());
 
 
@@ -503,7 +514,7 @@ public class CypherWalker
         else if (query.oC_Properties() != null)
         {
 
-        //    System.out.println("OC_Properties:"+query.oC_Properties().toString());
+         //   System.out.println("OC_Properties:"+query.oC_Properties().toString());
 
         }
 
@@ -518,7 +529,7 @@ public class CypherWalker
             for (int i = 0; i < query.getChildCount(); i++)
             {
 
-            //    System.out.println("OC_NodeLabel: "+ query.oC_NodeLabel(i).toString());
+               // System.out.println("OC_NodeLabel: "+ query.oC_NodeLabel(i).children.toString());
                 executeNodeLabelNameClause(query.oC_NodeLabel(i));
 
             }
@@ -532,7 +543,7 @@ public class CypherWalker
 
         if (query.oC_LabelName() != null)
         {
-        //    System.out.println("OC_LabelName: "+ query.oC_LabelName().toString());
+         //   System.out.println("OC_LabelName: "+ query.oC_LabelName().children.toString());
             executeLabelNameClause(query.oC_LabelName());
 
         }
@@ -549,7 +560,7 @@ public class CypherWalker
         if (query.oC_SchemaName() != null)
         {
 
-        //    System.out.println("OC_SchemaName: "+ query.oC_SchemaName().toString());
+            System.out.println("OC_SchemaName: "+ query.oC_SchemaName().toString());
             executeSchemaNameContext(query.oC_SchemaName());
 
         }
@@ -568,10 +579,12 @@ public class CypherWalker
         if (query.oC_SymbolicName() != null)
         {
          //   System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
-         //   System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns the Label ("Gene") in the current example.
+            System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns the Label ("Gene") in the current example.
             String label = query.oC_SymbolicName().children.toString();
             this.extractor.saveLabels(label);
             this.hashCollector.mapper(node, label);
+            executeSymbolicNameClause(query.oC_SymbolicName());
+
 
 
 
@@ -579,9 +592,19 @@ public class CypherWalker
         else if (query.oC_ReservedWord() != null)
         {
 
-        //    System.out.println("OC_ReserveWord: "+ query.oC_ReservedWord().toString());
+            System.out.println("OC_ReserveWord: "+ query.oC_ReservedWord().children.toString());
 
         }
+
+
+
+    }
+
+    private void executeSymbolicNameClause(CypherParser.OC_SymbolicNameContext statement)
+    {
+        final CypherParser.OC_SymbolicNameContext query = statement;
+
+        final String node = "SYMBOLIC_NAME_CLAUSE";
 
 
 
@@ -615,7 +638,7 @@ public class CypherWalker
         else if (query.oC_ProjectionItems() != null)
         {
 
-          //  System.out.println("OC_ProjectionItems:"+query.oC_ProjectionItems().toString());
+         //   System.out.println("OC_ProjectionItems:"+query.oC_ProjectionItems().children.toString());
 
             executeProjectionItemsClause(query.oC_ProjectionItems());
         }
@@ -626,7 +649,7 @@ public class CypherWalker
         }
         else if(query.oC_Skip() != null)
         {
-          //  System.out.println("OC_Skip"+query.oC_Skip().toString());
+            System.out.println("OC_Skip"+query.oC_Skip().toString());
 
         }
 
@@ -641,7 +664,7 @@ public class CypherWalker
             if (query.oC_ProjectionItem(i) !=  null)
             {
 
-            //    System.out.println("OC_ProjectionItem_i:"+query.oC_ProjectionItem(i).toString());
+              //  System.out.println("OC_ProjectionItem_i:"+query.oC_ProjectionItem(i).children.toString());
                 executeProjectionItemContext(query.oC_ProjectionItem(i));
 
             }
@@ -658,7 +681,7 @@ public class CypherWalker
         if (query.oC_Variable() != null)
         {
 
-           // System.out.print("OC_Variable:"+query.oC_Variable().toString());
+            System.out.print("OC_Variable:"+query.oC_Variable().toString());
             executeVariableClause(query.oC_Variable());
 
 
@@ -667,7 +690,7 @@ public class CypherWalker
         else if (query.oC_Expression() != null)
         {
 
-       //     System.out.print("OC_Expression:"+query.oC_Expression().toString());
+         //   System.out.print("OC_Expression:"+query.oC_Expression().children.toString());
             executeOrExpressionContext(query.oC_Expression());
 
         }
@@ -700,7 +723,7 @@ public class CypherWalker
 
             if (query.oC_XorExpression(i) !=  null)
             {
-             //   System.out.print("OC_XoRExpression:"+query.oC_XorExpression(i).toString());
+              //  System.out.print("OC_XoRExpression:"+query.oC_XorExpression(i).children.toString());
                 executeXorExpressionClause(query.oC_XorExpression(i));
 
             }
@@ -762,7 +785,7 @@ public class CypherWalker
             if (query.oC_ComparisonExpression() != null)
             {
 
-           //     System.out.print("OC_ComparisonExpression:"+query.oC_ComparisonExpression().toString());
+             //   System.out.print("OC_ComparisonExpression:"+query.oC_ComparisonExpression().children.toString());
                 executeComparisonExpressionContext(query.oC_ComparisonExpression());
 
             }
@@ -785,7 +808,29 @@ public class CypherWalker
 
         else if (query.oC_PartialComparisonExpression(0) != null)
         {
-         //   TODO: Usual stuff later
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+             //   System.out.print("OC_PartialComparisonExpr.:"+query.oC_PartialComparisonExpression(i).children.toString());
+                executePartialComparisonExpression(query.oC_PartialComparisonExpression(i));
+
+            }
+
+
+        }
+
+    }
+
+    private void executePartialComparisonExpression(CypherParser.OC_PartialComparisonExpressionContext statement)
+    {
+        final CypherParser.OC_PartialComparisonExpressionContext query = statement;
+
+        if (query.oC_AddOrSubtractExpression() != null)
+        {
+
+            executeAddOrSubtractExpressionContext(query.oC_AddOrSubtractExpression());
+
         }
 
     }
@@ -918,7 +963,11 @@ public class CypherWalker
         }
         else if (query.oC_NodeLabels() != null)
         {
+
+
         //    System.out.println("OC_NodeLabels  (executeAtom): "+query.oC_NodeLabels().toString());
+
+            executeNodeLabelClause(query.oC_NodeLabels());
 
         }
 
@@ -936,6 +985,8 @@ public class CypherWalker
 
 
     }
+
+
 
     // Can extract variable  ("n"  here)!
 
@@ -972,32 +1023,39 @@ public class CypherWalker
         else if (query.oC_CaseExpression() != null)
         {
 
+            System.out.println("OC_CaseExpression: "+query.oC_CaseExpression().children.toString());
+
         }
 
         else if (query.oC_FilterExpression() != null)
         {
+            System.out.println("OC_FilterExpression: "+query.oC_FilterExpression().children.toString());
 
         }
 
         else if (query.oC_Parameter() != null)
         {
+            System.out.println("OC_Parameter: "+query.oC_Parameter().children.toString());
 
         }
 
         else if (query.oC_FunctionInvocation() != null)
         {
 
+            System.out.println("OC_FunctionInvo: "+query.oC_FunctionInvocation().children.toString());
+
         }
 
         else if (query.oC_ListComprehension() != null)
         {
+            System.out.println("OC_ListComprehension: "+query.oC_ListComprehension().children.toString());
 
         }
 
         else if (query.oC_ParenthesizedExpression() != null)
         {
 
-            System.out.println("OC_ParenthesizedExpression");
+           // System.out.println("OC_ParenthesizedExpression");
             executeParenthesizedExpressionContext(query.oC_ParenthesizedExpression());
 
         }
@@ -1005,10 +1063,15 @@ public class CypherWalker
         else if (query.oC_PatternComprehension() != null)
         {
 
+            System.out.println("oc_patterncomprehension: "+query.oC_PatternComprehension().children.toString());
+
+
         }
 
         else if (query.oC_RelationshipsPattern() != null)
         {
+
+            System.out.println("OC_RelationshipPattern: "+query.oC_RelationshipsPattern().children.toString());
 
         }
 
@@ -1020,6 +1083,13 @@ public class CypherWalker
     private void executeParenthesizedExpressionContext(CypherParser.OC_ParenthesizedExpressionContext statement)
     {
         final CypherParser.OC_ParenthesizedExpressionContext query = statement;
+
+        if (query.oC_Expression() != null)
+        {
+
+            System.out.println("OC_ParenthExpr.: "+query.oC_Expression().children.toString());
+            executeExpressionClause(query.oC_Expression());
+        }
 
     }
 
@@ -1075,8 +1145,8 @@ public class CypherWalker
 
         JFrame frame = new JFrame("Testing the tree ...");
         JPanel panel = new JPanel();
-      //  TreeViewer viewer = new TreeViewer(Arrays.asList(cyphPars.getRuleNames()), tree);
-      //  panel.add(viewer);
+        //TreeViewer viewer = new TreeViewer(Arrays.asList(cyphPars.getRuleNames()), tree);
+       // panel.add(viewer);
         frame.add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
