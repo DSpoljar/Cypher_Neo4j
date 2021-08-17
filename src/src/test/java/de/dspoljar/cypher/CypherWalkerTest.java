@@ -87,6 +87,22 @@ class CypherWalkerTest
         testWalker.acceptQuery(g, "MATCH (n:Gene) WHERE n.GENE CONTAINS 'e' RETURN n.name", extractor);
     }
 
+    @Test
+    public void matchWhereQuery2() throws IOException
+    {
+
+        final Graph g = Graph.createTempGraph();
+        Node n = g.addNode("Gene");
+
+        // node = g.findNode("Gene", "test", "Hello");
+
+        CypherWalker testWalker = new CypherWalker();
+
+        CypherExtractor extractor = new CypherExtractor();
+
+        testWalker.acceptQuery(g, "MATCH (n:Gene_A) WHERE n.GENE CONTAINS 'A' RETURN n.name", extractor);
+    }
+
 
 
 
