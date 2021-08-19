@@ -187,9 +187,7 @@ public class CypherWalker
 
         }
 
-        // Testing variable saving ...
-       // System.out.print(this.extractor.labelStorage.toString());
-       // System.out.print(this.extractor.variableStorage.toString());
+
 
 
     }
@@ -232,6 +230,7 @@ public class CypherWalker
 
             for (int i = 0; i < query.getChildCount(); i++)
             {
+
                 executeWhithClause(query.oC_With(i));
 
             }
@@ -313,6 +312,7 @@ public class CypherWalker
     private void executeWhithClause(CypherParser.OC_WithContext statement)
     {
         final CypherParser.OC_WithContext query = statement;
+        System.out.println("In WITH CLAUSE");
 
         if (query.oC_ProjectionBody() != null)
         {
@@ -345,19 +345,7 @@ public class CypherWalker
 
     }
 
-    private void executeExpressionClause(CypherParser.OC_ExpressionContext statement)
-    {
-        final CypherParser.OC_ExpressionContext query = statement;
 
-        if (query.oC_OrExpression() != null)
-        {
-
-            executeOrExpressionClause(query.oC_OrExpression());
-
-        }
-
-
-    }
 
     private void executeMatchClause(CypherParser.OC_MatchContext statement)
     {
@@ -522,41 +510,127 @@ public class CypherWalker
 
 
 
+
         if (query.oC_NodeLabels() !=  null)
         {
+
 
             System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().children.toString());
             executeNodeLabelClause(query.oC_NodeLabels());
 
-            /* Needs to possibly iterate?
-            for (int i = 0; i < query.getChildCount(); i++)
-            {
-
-                executeNodeLabelClause(query.oC_NodeLabels());
-                System.out.println(query.oC_NodeLabels().oC_NodeLabel(i));
-
-
-            }
-            */
 
         }
-        
-        else if (query.oC_Variable() != null)
+        if (query.oC_Variable() != null)
         {
 
-       //     System.out.println("OC_Variable:"+query.oC_Variable().toString());
+            System.out.println("OC_Variable:"+query.oC_Variable().toString());
             executeVariableClause(query.oC_Variable());
 
         }
 
-        else if (query.oC_Properties() != null)
+        if (query.oC_Properties() != null)
         {
 
-         //   System.out.println("OC_Properties:"+query.oC_Properties().toString());
+            System.out.println("OC_Properties:"+query.oC_Properties().toString());
+            executePropertiesClause(query.oC_Properties());
+
+        }
+        
+
+
+    }
+
+    private void executePropertiesClause(CypherParser.OC_PropertiesContext statement)
+    {
+        final CypherParser.OC_PropertiesContext query = statement;
+
+        if (query.oC_Parameter() != null)
+        {
+
+            System.out.println("OC_param:"+query.oC_MapLiteral().toString());
+            executeParameterClause(query.oC_Parameter());
+
+        }
+
+        if (query.oC_MapLiteral() != null)
+        {
+
+            System.out.println("OC_maplit:"+query.oC_MapLiteral().children.toString());
+            executeMapLiteralClause(query.oC_MapLiteral());
+
 
         }
 
     }
+
+    private void executeParameterClause(CypherParser.OC_ParameterContext statement)
+    {
+        final CypherParser.OC_ParameterContext query = statement;
+
+
+
+
+    }
+
+    private void executeMapLiteralClause(CypherParser.OC_MapLiteralContext statement)
+    {
+        final CypherParser.OC_MapLiteralContext query = statement;
+
+        if (query.oC_Expression(0) != null)
+        {
+
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+
+                if (query.oC_Expression(i) != null)
+                {
+                    System.out.println("OCExpr:" +query.oC_Expression(i).toString());
+                    executeExpressionClause(query.oC_Expression(i));
+                }
+
+
+            }
+
+
+        }
+
+        if (query.oC_PropertyKeyName(0) != null)
+        {
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+
+                if (query.oC_PropertyKeyName(i) != null)
+                {
+
+                    executePropertyKeyNameContext(query.oC_PropertyKeyName(i));
+                }
+
+
+
+            }
+
+        }
+
+    }
+
+    private void executePropertyKeyNameContext(CypherParser.OC_PropertyKeyNameContext statement)
+    {
+        final CypherParser.OC_PropertyKeyNameContext query = statement;
+
+        if (query.oC_SchemaName() != null)
+        {
+
+            executeSchemaNameContext(query.oC_SchemaName());
+
+        }
+
+
+    }
+
 
     private void executeNodeLabelClause(CypherParser.OC_NodeLabelsContext statement)
     {
@@ -725,11 +799,11 @@ public class CypherWalker
 
         }
 
-        else if (query.oC_Expression() != null)
+        if (query.oC_Expression() != null)
         {
 
          //   System.out.print("OC_Expression:"+query.oC_Expression().children.toString());
-            executeOrExpressionContext(query.oC_Expression());
+            executeExpressionContext(query.oC_Expression());
 
         }
 
@@ -737,7 +811,7 @@ public class CypherWalker
 
 
 
-    private void executeOrExpressionContext(CypherParser.OC_ExpressionContext statement)
+    private void executeExpressionContext(CypherParser.OC_ExpressionContext statement)
     {
         final CypherParser.OC_ExpressionContext query = statement;
 
@@ -761,7 +835,7 @@ public class CypherWalker
 
             if (query.oC_XorExpression(i) !=  null)
             {
-              //  System.out.print("OC_XoRExpression:"+query.oC_XorExpression(i).children.toString());
+                System.out.print("OC_XoRExpression:"+query.oC_XorExpression(i).toString());
                 executeXorExpressionClause(query.oC_XorExpression(i));
 
             }
@@ -783,7 +857,7 @@ public class CypherWalker
             if (query.oC_AndExpression(i) !=  null)
             {
 
-            //    System.out.print("OC_AndExpression:"+query.oC_AndExpression(i).toString());
+               // System.out.print("OC_AndExpression:"+query.oC_AndExpression(i).toString());
                 executeAndExpressionContext(query.oC_AndExpression(i));
 
             }
@@ -804,7 +878,7 @@ public class CypherWalker
             if (query.oC_NotExpression(i) !=  null)
             {
 
-           //     System.out.print("OC_NotExpression:"+query.oC_NotExpression(i).toString());
+              //  System.out.print("OC_NotExpression:"+query.oC_NotExpression(i).toString());
                 executeNotExpressionContext(query.oC_NotExpression(i));
 
             }
@@ -823,7 +897,7 @@ public class CypherWalker
             if (query.oC_ComparisonExpression() != null)
             {
 
-             //   System.out.print("OC_ComparisonExpression:"+query.oC_ComparisonExpression().children.toString());
+                System.out.print("OC_ComparisonExpression:"+query.oC_ComparisonExpression().children.toString());
                 executeComparisonExpressionContext(query.oC_ComparisonExpression());
 
             }
@@ -839,7 +913,7 @@ public class CypherWalker
         if (query.oC_AddOrSubtractExpression() != null)
         {
 
-       //     System.out.print("OC_AddOrSubtractExpression:"+query.oC_AddOrSubtractExpression().toString());
+            //System.out.print("OC_AddOrSubtractExpression:"+query.oC_AddOrSubtractExpression().toString());
             executeAddOrSubtractExpressionContext(query.oC_AddOrSubtractExpression());
 
         }
@@ -884,7 +958,7 @@ public class CypherWalker
             if (query.oC_MultiplyDivideModuloExpression(i) !=  null)
             {
 
-            //    System.out.print("OC_MultiplyDivideModulo:"+query.oC_MultiplyDivideModuloExpression(i).toString());
+                System.out.print("OC_MultiplyDivideModulo:"+query.oC_MultiplyDivideModuloExpression(i).toString());
                 executeMultiplyDivideModuloExpressionContext(query.oC_MultiplyDivideModuloExpression(i));
 
             }
@@ -904,7 +978,7 @@ public class CypherWalker
             if (query.oC_PowerOfExpression(i) !=  null)
             {
 
-            //    System.out.print("OC_PowerOf:"+query.oC_PowerOfExpression(i).toString());
+              System.out.print("OC_PowerOf:"+query.oC_PowerOfExpression(i).toString());
                 executePowerOfExpressionContext(query.oC_PowerOfExpression(i));
 
             }
@@ -1017,6 +1091,32 @@ public class CypherWalker
             }
 
         }
+
+
+    }
+
+    private void executeExpressionClause(CypherParser.OC_ExpressionContext statement)
+    {
+        final CypherParser.OC_ExpressionContext query = statement;
+        // System.out.print("ocorexpression: "+query.oC_OrExpression().toString());
+
+
+        if (query.oC_OrExpression() != null)
+        {
+
+
+            System.out.print("OrExpress: "+query.oC_OrExpression().children.toString());
+            executeOrExpressionClause(query.oC_OrExpression());
+
+        }
+        else
+        {
+
+            System.out.print("Empty Expression");
+
+        }
+
+
 
 
     }

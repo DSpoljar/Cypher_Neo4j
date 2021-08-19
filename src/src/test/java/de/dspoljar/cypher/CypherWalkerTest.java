@@ -95,6 +95,7 @@ class CypherWalkerTest
         Node n = g.addNode("Gene");
 
         // node = g.findNode("Gene", "test", "Hello");
+        //  node.setProperty("symbol", "IL10");
 
         CypherWalker testWalker = new CypherWalker();
 
