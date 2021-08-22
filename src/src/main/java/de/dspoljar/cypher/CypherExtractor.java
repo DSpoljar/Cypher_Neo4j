@@ -16,8 +16,6 @@ public class CypherExtractor
     public List<String> saveLabels(String label)
     {
 
-
-
         this.labelStorage.add(label);
 
         return this.labelStorage;
@@ -43,7 +41,7 @@ public class CypherExtractor
 
         public List<String> variableList = new ArrayList<String>();
 
-        public HashMap<String, List<String>> variableCollector = new HashMap<String, List<String>>();
+        public HashMap<String, String> variableCollector = new HashMap<String, String>();
 
 
         public HashMapper()
@@ -70,7 +68,7 @@ public class CypherExtractor
 
         }
 
-        public HashMap<String, List<String>> getVariableCollector()
+        public HashMap<String, String> getVariableCollector()
         {
             return variableCollector;
         }

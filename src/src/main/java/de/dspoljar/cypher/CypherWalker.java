@@ -7,10 +7,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class CypherWalker
@@ -18,6 +15,8 @@ public class CypherWalker
 
      CypherExtractor extractor = new CypherExtractor();
      CypherExtractor.HashMapper hashCollector = extractor.new HashMapper();
+     final List<String> variableList = null;
+
 
     final List<String> executeVariableClauseList = new ArrayList<String>();
 
@@ -28,6 +27,57 @@ public class CypherWalker
       //  CypherParser cyphPars = new CypherParser(tokenStream)
 
 
+
+    }
+
+    public String extractSingleNodeLabel(CypherExtractor extractor, String variable)
+    {
+        // SOuts for testing purposes
+        //System.out.println(this.hashCollector.getNodesLabels()+"\n");
+        //System.out.println(this.hashCollector.getVariableOutOfList(extractor.variableStorage, "p")+"\n"); // Returns variable
+        //System.out.println(this.hashCollector.getVariableCollector());
+
+
+        System.out.println(this.hashCollector.variableCollector);
+        if (this.hashCollector.variableCollector.containsKey("VARIABLE_CLAUSE"))
+        {
+
+            return this.hashCollector.variableCollector.getOrDefault("VARIABLE_CLAUSE", variable);
+
+
+        }
+        else
+        {
+
+            return  "Wrong key and/or variable";
+
+
+        }
+
+
+    }
+
+    public String extractMapNodeLabel(CypherExtractor extractor, String variable)
+    {
+        // SOuts for testing purposes
+        //System.out.println(this.hashCollector.getNodesLabels()+"\n");
+        //System.out.println(this.hashCollector.getVariableOutOfList(extractor.variableStorage, "p")+"\n"); // Returns variable
+        //System.out.println(this.hashCollector.getVariableCollector());
+
+
+        if (this.hashCollector.nodesLabels.containsKey("LITERAL_CLAUSE"))
+        {
+
+         return this.hashCollector.nodesLabels.getOrDefault("LITERAL_CLAUSE", variable);
+
+        }
+        else
+        {
+
+
+            return "Key and/or Variable not in list.";
+
+        }
 
     }
 
@@ -76,13 +126,16 @@ public class CypherWalker
 
 
         // Testing variable saving ...
-          System.out.print(this.extractor.labelStorage.toString()+"\n");
-          System.out.print(this.extractor.variableStorage.toString()+"\n");
+          //System.out.print(this.extractor.labelStorage.toString()+"\n");
+          //System.out.print(this.extractor.variableStorage.toString()+"\n");
         // Testing hashing etc.
-           System.out.println(this.hashCollector.getNodesLabels()+"\n");
-           System.out.println(this.hashCollector.getVariableOutOfList(this.extractor.variableStorage, "p")+"\n"); // Returns variable
+           //System.out.println(this.hashCollector.getNodesLabels()+"\n");
+           //System.out.println(this.hashCollector.getVariableOutOfList(this.extractor.variableStorage, "p")+"\n"); // Returns variable
+        //System.out.println(this.hashCollector.getVariableCollector());
 
-        System.out.println(this.hashCollector.getVariableCollector());
+
+       System.out.println("Variable extraction: " + extractSingleNodeLabel(this.extractor, "n") ); // Extracts variable
+       System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
 
     }
 
@@ -1246,7 +1299,10 @@ public class CypherWalker
 
         final String node = "LITERAL_CLAUSE";
         //System.out.println("LITERALCHILDREN: "+query.children.toString()); // <-- IL10 / SYMBOL is here!
-        System.out.println("Symbol: "+query.getChild(0));
+        System.out.println("Symbol: "+query.getChild(0).toString());
+        String label = query.getChild(0).toString();
+        this.extractor.saveLabels(label);
+        this.hashCollector.mapper(node, label);
 
         if (query.oC_MapLiteral() != null)
         {
@@ -1311,14 +1367,18 @@ public class CypherWalker
             String variable = query.oC_SymbolicName().children.get(0).toString();
           //  System.out.print("var:"+variable);
 
+
+            /*
             if (!executeVariableClauseList.contains(variable))
             {
 
                 executeVariableClauseList.add(variable);
 
-            }
 
-            this.hashCollector.variableCollector.put(node, executeVariableClauseList);
+            } */
+
+
+            this.hashCollector.variableCollector.put(node, variable);
             this.extractor.saveVariables(variable); // Saving variable "N"
             this.hashCollector.mapper(node, variable);
 
