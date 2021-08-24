@@ -49,7 +49,7 @@ public class CypherWalker
         else
         {
 
-            return  "Wrong key and/or variable";
+            return  "Key and/or Variable not in list.";
 
 
         }
@@ -304,17 +304,17 @@ public class CypherWalker
 
         }
 
-        else if(query.oC_Unwind() != null)
+         if (query.oC_Unwind() != null)
         {
 
-            //System.out.println("OC_Unwind (Reading):"+query.oC_Unwind().toString());
+            System.out.println("OC_Unwind (Reading):"+query.oC_Unwind().toString());
 
         }
 
-        else if(query.oC_InQueryCall() != null)
+         if (query.oC_InQueryCall() != null)
         {
 
-            //System.out.println("OC_InQueryCall (Reading):"+query.oC_InQueryCall().toString());
+            System.out.println("OC_InQueryCall (Reading):"+query.oC_InQueryCall().toString());
 
         }
 
@@ -518,21 +518,24 @@ public class CypherWalker
     {
         final CypherParser.OC_PatternElementChainContext query = statement;
 
+
         if (query.oC_NodePattern() != null)
         {
 
+            System.out.println(query.oC_NodePattern());
             executeNodePatternClause(query.oC_NodePattern());
 
         }
 
-        else if (query.oC_RelationshipPattern() != null)
+        if (query.oC_RelationshipPattern() != null)
         {
 
-            //System.out.println("OC_Relationshippattern: "+query.oC_RelationshipPattern().toString());
+            System.out.println("OC_Relationshippattern: "+query.oC_RelationshipPattern().toString());
             executeRelationshipPattern(query.oC_RelationshipPattern());
 
 
         }
+
 
 
     }
@@ -545,7 +548,121 @@ public class CypherWalker
         if (query.oC_RelationshipDetail() != null)
         {
 
+            System.out.println("OC_Relaionshipdetail: "+query.oC_RelationshipDetail().toString());
+            executeRelationshipDetailContext(query.oC_RelationshipDetail());
+
+
         }
+
+        if (query.oC_Dash(0) != null)
+        {
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+                System.out.println("OC_Dash: "+query.oC_Dash().toString());
+                executeDashClause(query.oC_Dash(i));
+
+            }
+
+        }
+
+        if (query.oC_LeftArrowHead() !=  null)
+        {
+
+            System.out.println("LeftArrowhead: "+query.oC_LeftArrowHead().toString());
+
+
+
+        }
+
+        if (query.oC_RightArrowHead()  != null)
+        {
+            System.out.println("LeftArrowhead: "+query.oC_LeftArrowHead().toString());
+
+
+        }
+
+    }
+
+    private void executeRelationshipDetailContext(CypherParser.OC_RelationshipDetailContext statement)
+    {
+        final CypherParser.OC_RelationshipDetailContext query = statement;
+
+        if (query.oC_Properties() != null)
+        {
+            System.out.println("Props");
+            executePropertiesClause(query.oC_Properties());
+
+        }
+
+        if (query.oC_Variable()  != null)
+        {
+
+            System.out.println("Variable: "+query.oC_Variable().toString());
+            executeVariableClause(query.oC_Variable());
+
+        }
+
+        if (query.oC_RelationshipTypes() != null)
+        {
+
+            executeRelationsipTypesContext(query.oC_RelationshipTypes());
+
+        }
+
+        if (query.oC_RangeLiteral() != null)
+        {
+            System.out.println("RangeLiteral");
+
+        }
+
+
+
+    }
+
+    private void executeRelationsipTypesContext(CypherParser.OC_RelationshipTypesContext statement)
+    {
+        final CypherParser.OC_RelationshipTypesContext query = statement;
+
+        if (query.oC_RelTypeName(0) != null)
+        {
+
+            for (int i = 0; i < query.getChildCount(); i++)
+            {
+
+                System.out.println("OCReltypes: "+query.oC_RelTypeName(i));
+                executeRelTypeNameContext(query.oC_RelTypeName(i));
+
+            }
+
+        }
+
+
+    }
+
+    private void executeRelTypeNameContext(CypherParser.OC_RelTypeNameContext statement)
+    {
+        final CypherParser.OC_RelTypeNameContext query = statement;
+
+
+        if (query.oC_SchemaName() != null)
+        {
+            System.out.println("schema name in  ..."+query.oC_SchemaName().toString());
+            executeSchemaNameContext(query.oC_SchemaName());
+        }
+
+
+
+    }
+
+
+    private void executeDashClause(CypherParser.OC_DashContext statement)
+    {
+        final CypherParser.OC_DashContext query = statement;
+
+
+        System.out.println(query.children.toString());
 
     }
 
@@ -555,13 +672,11 @@ public class CypherWalker
         final CypherParser.OC_NodePatternContext query = statement;
 
 
-
-
         if (query.oC_NodeLabels() !=  null)
         {
 
 
-            //System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString());
+            System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString());
             executeNodeLabelClause(query.oC_NodeLabels());
 
 
@@ -571,7 +686,7 @@ public class CypherWalker
         if (query.oC_Variable() != null)
         {
 
-            //System.out.println("OC_Variable:"+query.oC_Variable().toString());
+            System.out.println("OC_Variable:"+query.oC_Variable().toString());
             executeVariableClause(query.oC_Variable());
 
         }
@@ -695,7 +810,7 @@ public class CypherWalker
             for (int i = 0; i < query.getChildCount(); i++)
             {
 
-                //System.out.println("OC_NodeLabel: "+ query.oC_NodeLabel(i).toString());
+                System.out.println("OC_NodeLabel: "+ query.oC_NodeLabel(i).toString());
                 executeNodeLabelNameClause(query.oC_NodeLabel(i));
 
             }
@@ -710,7 +825,7 @@ public class CypherWalker
         if (query.oC_LabelName() != null)
         {
 
-            //System.out.println("OC_LabelName: "+ query.oC_LabelName().toString());
+            System.out.println("OC_LabelName: "+ query.oC_LabelName().toString());
             executeLabelNameClause(query.oC_LabelName());
 
         }
@@ -727,7 +842,7 @@ public class CypherWalker
         if (query.oC_SchemaName() != null)
         {
 
-           // System.out.println("OC_SchemaName: (LabelNameClause) "+ query.oC_SchemaName().toString());
+            System.out.println("OC_SchemaName: (LabelNameClause) "+ query.oC_SchemaName().toString());
             executeSchemaNameContext(query.oC_SchemaName());
 
         }
@@ -745,8 +860,8 @@ public class CypherWalker
 
         if (query.oC_SymbolicName() != null)
         {
-            // System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
-            //    System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns the Label ("Gene") in the current example.
+             //System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
+                System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns the Label ("Gene") in the current example.
             String label = query.oC_SymbolicName().children.toString();
             this.extractor.saveLabels(label);
             this.hashCollector.mapper(node, label);
@@ -758,10 +873,21 @@ public class CypherWalker
          if (query.oC_ReservedWord() != null)
         {
 
-            //    System.out.println("OC_ReserveWord: "+ query.oC_ReservedWord().toString());
+
+                executeReservedWord(query.oC_ReservedWord());
+
 
         }
 
+
+
+    }
+
+    private void executeReservedWord(CypherParser.OC_ReservedWordContext statement)
+    {
+        final CypherParser.OC_ReservedWordContext query = statement;
+
+        System.out.println("ReservedWord: "+query.children.toString());
 
 
     }
@@ -796,30 +922,30 @@ public class CypherWalker
 
         final CypherParser.OC_ProjectionBodyContext query = statement;
 
-        if(query.oC_Limit() !=  null)
+        if (query.oC_Limit() !=  null)
         {
 
-            //  System.out.println("OC_Limit:"+query.oC_Limit().toString());
+              System.out.println("OC_Limit:"+query.oC_Limit().toString());
 
         }
 
-        else if (query.oC_ProjectionItems() != null)
+        if (query.oC_ProjectionItems() != null)
         {
 
-         //   System.out.println("OC_ProjectionItems:"+query.oC_ProjectionItems().children.toString());
+            System.out.println("OC_ProjectionItems:"+query.oC_ProjectionItems().children.toString());
 
             executeProjectionItemsClause(query.oC_ProjectionItems());
         }
 
-        else if(query.oC_Order() != null)
+        if(query.oC_Order() != null)
         {
 
-            // System.out.println("OC_Order:"+query.oC_Order().toString());
+             System.out.println("OC_Order:"+query.oC_Order().toString());
 
         }
-        else if(query.oC_Skip() != null)
+        if(query.oC_Skip() != null)
         {
-            //   System.out.println("OC_Skip"+query.oC_Skip().toString());
+               System.out.println("OC_Skip"+query.oC_Skip().toString());
 
         }
 
