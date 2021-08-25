@@ -38,7 +38,7 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node node = g.addNode("Gene");
-        node.setProperty("symbol", "IL10");
+        node.setProperty("symbol", "IL10"); //IL10
         g.update(node);
         // node = g.findNode("Gene", "test", "Hello");
 
@@ -102,6 +102,7 @@ class CypherWalkerTest
         CypherExtractor extractor = new CypherExtractor();
 
         testWalker.acceptQuery(g, "MATCH (n:Gene_A) WHERE n.GENE CONTAINS 'A' RETURN n.name", extractor);
+
     }
 
 

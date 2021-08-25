@@ -43,6 +43,10 @@ public class CypherExtractor
 
         public HashMap<String, String> variableCollector = new HashMap<String, String>();
 
+        public HashMap<String, String> edgeCollector = new HashMap<String, String>();
+
+        public List<String> edgeAndNodeList = new ArrayList<String>();
+
 
         public HashMapper()
         {
@@ -56,6 +60,23 @@ public class CypherExtractor
 
             this.nodesLabels.put(node, variable);
             this.variableList.add(variable);
+
+
+        }
+
+        public void edgeMapper(List<String> nodeEdgeList, List<String> variableList)
+        {
+
+
+
+            for (int i = 0; i  < nodeEdgeList.size(); i++)
+            {
+
+
+                this.edgeCollector.put(nodeEdgeList.get(i), variableList.get(i));
+
+
+            }
 
 
         }
