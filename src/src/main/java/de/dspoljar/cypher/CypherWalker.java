@@ -71,6 +71,7 @@ public class CypherWalker
          return this.hashCollector.nodesLabels.getOrDefault("LITERAL_CLAUSE", variable);
 
         }
+
         else
         {
 
@@ -81,7 +82,7 @@ public class CypherWalker
 
     }
 
-    private HashMap<String, String> extractEdgeNodeLabels(CypherExtractor extractor)
+    public HashMap<String, String> extractEdgeNodeLabels(CypherExtractor extractor)
     {
 
         //System.out.println(this.hashCollector.variableList);
@@ -155,6 +156,28 @@ public class CypherWalker
 
     }
 
+    private String extractVariableFromWhereQuery(CypherExtractor extractor, String var)
+    {
+
+
+        if (this.hashCollector.whereVarCollector.containsKey("SCHEMA_CONTEXT"))
+        {
+
+            return this.hashCollector.variableCollector.getOrDefault("SCHEMA_CONTEXT", var);
+
+
+        }
+        else
+        {
+
+            return  "Key and/or Variable not in list.";
+
+
+        }
+
+
+    }
+
 
 
     public void acceptQuery(Graph graph, String query, CypherExtractor extractor)
@@ -199,18 +222,12 @@ public class CypherWalker
         }
 
 
-        // Testing variable saving ...
-          //System.out.print(this.extractor.labelStorage.toString()+"\n");
-          //System.out.print(this.extractor.variableStorage.toString()+"\n");
-        // Testing hashing etc.
-           //System.out.println(this.hashCollector.getNodesLabels()+"\n");
-           //System.out.println(this.hashCollector.getVariableOutOfList(this.extractor.variableStorage, "p")+"\n"); // Returns variable
-        //System.out.println(this.hashCollector.getVariableCollector());
+        // Testing various extractors. Adjusting may be in order:
 
-
-        System.out.println("Variable extraction: " + extractSingleNodeLabel(this.extractor, "n") ); // Extracts variable
-        System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
-        System.out.println("Edge/node and variable extraction: " + extractEdgeNodeLabels(this.extractor) ); // Extracts chain
+        //System.out.println("Variable extraction: " + extractSingleNodeLabel(this.extractor, "n") ); // Extracts variable
+        //System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
+       //System.out.println("Edge/node and variable extraction: " + extractEdgeNodeLabels(this.extractor) ); // Extracts chain
+        System.out.println("Variable (W) extraction: " + extractVariableFromWhereQuery(this.extractor, "name") ); // Extracts variable (WHERE)
 
     }
 
@@ -960,11 +977,17 @@ public class CypherWalker
         if (query.oC_SymbolicName() != null)
         {
              //System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
-                System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns the Label ("Gene") in the current example.
+            System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns label/name
             String label = query.oC_SymbolicName().children.toString();
+
+            // SINGLE & CHAINED LABEL QUERY
             this.extractor.saveLabels(label);
             this.hashCollector.mapper(node, label);
             this.hashCollector.edgeAndNodeList.add(query.oC_SymbolicName().children.toString());
+
+            // WHERE QUERY
+            this.hashCollector.whereMapper(node, label);
+            this.hashCollector.whereVarList.add(label);
             executeSymbolicNameClause(query.oC_SymbolicName());
 
 
@@ -1378,8 +1401,14 @@ public class CypherWalker
             for (int i = 0; i < query.getChildCount(); i++)
             {
 
-                //System.out.println("OC_PropertyLookup: "+query.oC_PropertyLookup(i));
-                executePropertyLookup(query.oC_PropertyLookup(i));
+                if (query.oC_PropertyLookup(i) != null)
+                {
+
+                    //System.out.println("OC_PropertyLookup: "+query.oC_PropertyLookup(i));
+                    executePropertyLookup(query.oC_PropertyLookup(i));
+
+                }
+
 
 
             }
@@ -1605,9 +1634,9 @@ public class CypherWalker
             } */
 
 
+
             this.hashCollector.variableCollector.put(node, variable);
             this.extractor.saveVariables(variable); // Saving variable "N"
-
             this.hashCollector.variableList.add(query.oC_SymbolicName().children.get(0).toString());
 
 

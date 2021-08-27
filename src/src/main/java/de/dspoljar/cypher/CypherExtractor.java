@@ -47,6 +47,9 @@ public class CypherExtractor
 
         public List<String> edgeAndNodeList = new ArrayList<String>();
 
+        public HashMap<String, String> whereVarCollector = new HashMap<String, String>();
+
+        public List<String> whereVarList = new ArrayList<String>();
 
         public HashMapper()
         {
@@ -81,13 +84,14 @@ public class CypherExtractor
 
         }
 
-        public void variableMapper(String node, List<String> variables)
+        public void whereMapper(String node, String variable)
         {
 
-            // TODO: Experimental
-
+            this.whereVarCollector.put(node, variable);
+            this.whereVarList.add(variable);
 
         }
+
 
         public HashMap<String, String> getVariableCollector()
         {
