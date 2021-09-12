@@ -1,5 +1,7 @@
 package de.dspoljar.cypher;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import de.unibi.agbi.biodwh2.core.model.graph.Graph;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -8,6 +10,8 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import javax.swing.*;
 import java.util.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class CypherWalker
@@ -38,11 +42,39 @@ public class CypherWalker
         //System.out.println(this.hashCollector.getVariableCollector());
 
 
+
         System.out.println(this.hashCollector.variableCollector);
         if (this.hashCollector.variableCollector.containsKey("VARIABLE_CLAUSE"))
         {
 
-            return this.hashCollector.variableCollector.getOrDefault("VARIABLE_CLAUSE", variable);
+
+            String targetVar = this.hashCollector.variableCollector.getOrDefault("VARIABLE_CLAUSE", variable);
+
+            /*
+            String JSON_TREE = "{\"VARIABLE_CLAUSE\":"+targetVar+"}";
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            try {
+
+                JsonNode node = mapper.readTree(JSON_TREE);
+                String currentNode = node.get("VARIABLE_CLAUSE").asText();
+                String var = node.get(targetVar).asText();
+                System.out.println("Variable: "+ var +", Node: "+ currentNode);
+
+            } catch (JsonMappingException e)
+
+            {
+                e.printStackTrace();
+
+            } catch (JsonProcessingException e)
+
+            {
+                e.printStackTrace();
+            }
+
+            */
+            return targetVar;
 
 
         }
@@ -225,9 +257,9 @@ public class CypherWalker
         // Testing various extractors. Adjusting may be in order:
 
         //System.out.println("Variable extraction: " + extractSingleNodeLabel(this.extractor, "n") ); // Extracts variable
-        //System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
+        System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
        //System.out.println("Edge/node and variable extraction: " + extractEdgeNodeLabels(this.extractor) ); // Extracts chain
-        System.out.println("Variable (W) extraction: " + extractVariableFromWhereQuery(this.extractor, "name") ); // Extracts variable (WHERE)
+        //System.out.println("Variable (W) extraction: " + extractVariableFromWhereQuery(this.extractor, "name") ); // Extracts variable (WHERE)
 
     }
 
