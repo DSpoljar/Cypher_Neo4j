@@ -20,14 +20,17 @@ class CypherWalkerTest
         node.setProperty("test", "Hello");
         g.update(node);
 
-
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
         testWalker.acceptQuery(g, "MATCH (n:Gene) RETURN n", extractor);
 
-        node = g.findNode("Gene", "test", "n");
+        g.findNodes(node.getLabel());
+
+        System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
+
+       // node = g.findNode("Gene", "test", "n");
 
 
     }
@@ -48,6 +51,9 @@ class CypherWalkerTest
 
         testWalker.acceptQuery(g, "MATCH (n:Gene {symbol: \"IL10\"}) RETURN n", extractor);
 
+        g.findNodes(node.getLabel());
+
+        System.out.println(testWalker.extractMapNodeLabel(extractor, "IL10"));
 
     }
 
@@ -68,6 +74,9 @@ class CypherWalkerTest
 
         testWalker.acceptQuery(g, "MATCH (g:Gene)-[r:CODES_FOR]->(p:Protein) RETURN g, r, p", extractor);
 
+        System.out.println(testWalker.extractEdgeNodeLabels(extractor));
+
+
 
     }
 
@@ -87,6 +96,13 @@ class CypherWalkerTest
         CypherExtractor extractor = new CypherExtractor();
 
         testWalker.acceptQuery(g, "MATCH (n:Gene) WHERE n.GENE CONTAINS 'e' RETURN n.name", extractor);
+
+        System.out.println(testWalker.extractVariableFromWhereQuery(extractor, "e"));
+
+
+
+
+
     }
 
     @Test

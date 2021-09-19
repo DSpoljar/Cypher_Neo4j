@@ -27,10 +27,9 @@ public class CypherWalker
 
     public CypherWalker()
     {
+
         super();
       //  CypherParser cyphPars = new CypherParser(tokenStream)
-
-
 
     }
 
@@ -49,6 +48,7 @@ public class CypherWalker
 
 
             String targetVar = this.hashCollector.variableCollector.getOrDefault("VARIABLE_CLAUSE", variable);
+
 
             /*
             String JSON_TREE = "{\"VARIABLE_CLAUSE\":"+targetVar+"}";
@@ -74,6 +74,7 @@ public class CypherWalker
             }
 
             */
+            
             return targetVar;
 
 
@@ -188,7 +189,7 @@ public class CypherWalker
 
     }
 
-    private String extractVariableFromWhereQuery(CypherExtractor extractor, String var)
+    public String extractVariableFromWhereQuery(CypherExtractor extractor, String var)
     {
 
 
@@ -254,10 +255,10 @@ public class CypherWalker
         }
 
 
-        // Testing various extractors. Adjusting may be in order:
+        // Testing various extractors. Relocated all of them properly in the test class.
 
         //System.out.println("Variable extraction: " + extractSingleNodeLabel(this.extractor, "n") ); // Extracts variable
-        System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
+        //System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
        //System.out.println("Edge/node and variable extraction: " + extractEdgeNodeLabels(this.extractor) ); // Extracts chain
         //System.out.println("Variable (W) extraction: " + extractVariableFromWhereQuery(this.extractor, "name") ); // Extracts variable (WHERE)
 
