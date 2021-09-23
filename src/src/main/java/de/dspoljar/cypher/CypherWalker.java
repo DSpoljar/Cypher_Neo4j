@@ -2,7 +2,9 @@ package de.dspoljar.cypher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import de.unibi.agbi.biodwh2.core.model.graph.Edge;
 import de.unibi.agbi.biodwh2.core.model.graph.Graph;
+import de.unibi.agbi.biodwh2.core.model.graph.Node;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -19,7 +21,9 @@ public class CypherWalker
 
      CypherExtractor extractor = new CypherExtractor();
      CypherExtractor.HashMapper hashCollector = extractor.new HashMapper();
-     final List<String> variableList = null;
+     final List<String> variableKeyList = new ArrayList<String>();
+     final List<String> nameValueList = new ArrayList<String>();
+     public HashMap<String, String> chainedLabelAndVariable = new HashMap<String, String>();
 
 
     final List<String> executeVariableClauseList = new ArrayList<String>();
@@ -35,14 +39,10 @@ public class CypherWalker
 
     public String extractSingleNodeLabel(CypherExtractor extractor, String variable)
     {
-        // SOuts for testing purposes
-        //System.out.println(this.hashCollector.getNodesLabels()+"\n");
-        //System.out.println(this.hashCollector.getVariableOutOfList(extractor.variableStorage, "p")+"\n"); // Returns variable
-        //System.out.println(this.hashCollector.getVariableCollector());
-
 
 
         System.out.println(this.hashCollector.variableCollector);
+
         if (this.hashCollector.variableCollector.containsKey("VARIABLE_CLAUSE"))
         {
 
@@ -101,7 +101,9 @@ public class CypherWalker
         if (this.hashCollector.nodesLabels.containsKey("LITERAL_CLAUSE"))
         {
 
-         return this.hashCollector.nodesLabels.getOrDefault("LITERAL_CLAUSE", variable);
+            String targetVar = this.hashCollector.nodesLabels.getOrDefault("LITERAL_CLAUSE", variable);
+
+            return targetVar;
 
         }
 
@@ -115,79 +117,32 @@ public class CypherWalker
 
     }
 
-    public HashMap<String, String> extractEdgeNodeLabels(CypherExtractor extractor)
+    // For "matchChainedLabel" test.
+
+    public HashMap<String, String> extractEdgeNodeLabels()
     {
 
-        //System.out.println(this.hashCollector.variableList);
-        List<String> filteredList =  new ArrayList<String>();
 
-        for (int i = 0; i < this.hashCollector.variableList.size(); i++)
-        {
-            // Can be made more dynamic by supplementing arguments/paramenters
+       //List<String> filteredList =  new ArrayList<String>();
 
-
-            if (this.hashCollector.variableList.contains("g") && !filteredList.contains("g"))
-            {
-
-                filteredList.add("g");
-
-            }
-
-            if (this.hashCollector.variableList.contains("r") && !filteredList.contains("r"))
-            {
-
-                filteredList.add("r");
-
-
-            }
-
-            if (this.hashCollector.variableList.contains("p") && !filteredList.contains("p"))
-            {
-                filteredList.add("p");
-
-            }
-
-        }
-
-        // Convoluted way of sorting the node and edge list ...
-
-
-        for (int j = 0; j < this.hashCollector.edgeAndNodeList.size(); j++)
+        for (int i = 0; i < this.nameValueList.size(); i++)
         {
 
-            // Provisorisch?
-            this.hashCollector.edgeAndNodeList.set(0, "Gene");
-            this.hashCollector.edgeAndNodeList.set(1, "CODES_FOR");
-            this.hashCollector.edgeAndNodeList.set(2, "Protein");
-
-             if (this.hashCollector.edgeAndNodeList.get(j) == "Gene")
-            {
-
-
-                this.hashCollector.edgeAndNodeList.set(0, "Gene");
-
-            }
-
-             else if (this.hashCollector.edgeAndNodeList.get(j) == "CODES_FOR")
-            {
-
-                this.hashCollector.edgeAndNodeList.set(1, "CODES_FOR");
-
-            }
-
-             else if (this.hashCollector.edgeAndNodeList.get(j) == "Protein")
-            {
-
-                this.hashCollector.edgeAndNodeList.set(2, "Protein");
-            }
+            this.chainedLabelAndVariable.put(this.nameValueList.get(i), this.variableKeyList.get(i));
 
 
         }
 
-        this.hashCollector.edgeMapper(this.hashCollector.edgeAndNodeList, filteredList);
-        return this.hashCollector.edgeCollector;
+
+
+
+       //this.hashCollector.edgeMapper(this.hashCollector.edgeAndNodeList, filteredList);
+       // return this.hashCollector.edgeCollector;
+       // System.out.println(this.chainedLabelAndVariable.toString());
+        return this.chainedLabelAndVariable;
 
     }
+
 
     public String extractVariableFromWhereQuery(CypherExtractor extractor, String var)
     {
@@ -825,7 +780,8 @@ public class CypherWalker
         {
 
 
-            System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString());
+
+            System.out.println("OC_NodeLabels:"+query.oC_NodeLabels().toString()); // LABELS DES KNOTENS
             executeNodeLabelClause(query.oC_NodeLabels());
 
 
@@ -835,7 +791,7 @@ public class CypherWalker
         if (query.oC_Variable() != null)
         {
 
-            System.out.println("OC_Variable:"+query.oC_Variable().toString());
+            System.out.println("OC_Variable:"+query.oC_Variable().toString()); // OC-VARIABLE
             executeVariableClause(query.oC_Variable());
 
         }
@@ -1012,6 +968,8 @@ public class CypherWalker
              //System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
             System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns label/name
             String label = query.oC_SymbolicName().children.toString();
+            System.out.println(label);
+            this.nameValueList.add(label);
 
             // SINGLE & CHAINED LABEL QUERY
             this.extractor.saveLabels(label);
@@ -1497,7 +1455,6 @@ public class CypherWalker
         final String node = "ATOM_CONTEXT";
 
 
-
         if (query.oC_Literal() !=  null)
         {
 
@@ -1655,6 +1612,10 @@ public class CypherWalker
             String variable = query.oC_SymbolicName().children.get(0).toString();
             String edgeVar =  query.oC_SymbolicName().children.get(0).toString();
             System.out.print("var:"+query.oC_SymbolicName().children.toString());
+            System.out.println("Variable: "+variable);
+            this.variableKeyList.add(variable);
+
+
 
 
             /*

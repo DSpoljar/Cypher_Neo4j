@@ -1,5 +1,7 @@
 package de.dspoljar.cypher;
 
+import de.unibi.agbi.biodwh2.core.model.graph.Node;
+
 import java.util.*;
 
 public class CypherExtractor
@@ -80,6 +82,16 @@ public class CypherExtractor
 
 
             }
+
+
+        }
+
+        public void edgeMapper_2(String nodeLabel, String content)
+        {
+
+
+
+                this.edgeCollector.put(nodeLabel, content);
 
 
         }

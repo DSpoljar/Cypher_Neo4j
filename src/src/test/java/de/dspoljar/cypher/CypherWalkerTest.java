@@ -1,7 +1,9 @@
 package de.dspoljar.cypher;
 
+import de.unibi.agbi.biodwh2.core.model.graph.Edge;
 import de.unibi.agbi.biodwh2.core.model.graph.Graph;
 import de.unibi.agbi.biodwh2.core.model.graph.Node;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,7 +28,10 @@ class CypherWalkerTest
 
         testWalker.acceptQuery(g, "MATCH (n:Gene) RETURN n", extractor);
 
-        g.findNodes(node.getLabel());
+        g.findNodes(node.getLabel(), "n");
+
+
+        Assertions.assertEquals("n", testWalker.extractSingleNodeLabel(extractor, "n"));
 
         System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
 
@@ -51,7 +56,10 @@ class CypherWalkerTest
 
         testWalker.acceptQuery(g, "MATCH (n:Gene {symbol: \"IL10\"}) RETURN n", extractor);
 
-        g.findNodes(node.getLabel());
+        g.findNodes(node.getLabel(), "symbol", "IL10");
+
+
+        Assertions.assertEquals("\"IL10\"", testWalker.extractMapNodeLabel(extractor, "IL10"));
 
         System.out.println(testWalker.extractMapNodeLabel(extractor, "IL10"));
 
@@ -64,7 +72,7 @@ class CypherWalkerTest
         final Graph g = Graph.createTempGraph();
         Node n = g.addNode("Gene");
         Node p = g.addNode("Protein");
-        g.addEdge(n, p, "CODES_FOR");
+        Edge r = g.addEdge(n, p, "CODES_FOR");
 
         // node = g.findNode("Gene", "test", "Hello");
 
@@ -72,9 +80,13 @@ class CypherWalkerTest
 
         CypherExtractor extractor = new CypherExtractor();
 
+        g.getAdjacentNodeIdsForEdgeLabel(n.getId(), r.getLabel());
+
         testWalker.acceptQuery(g, "MATCH (g:Gene)-[r:CODES_FOR]->(p:Protein) RETURN g, r, p", extractor);
 
-        System.out.println(testWalker.extractEdgeNodeLabels(extractor));
+        Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
+
+        System.out.println(testWalker.extractEdgeNodeLabels());
 
 
 
@@ -95,11 +107,9 @@ class CypherWalkerTest
 
         CypherExtractor extractor = new CypherExtractor();
 
-        testWalker.acceptQuery(g, "MATCH (n:Gene) WHERE n.GENE CONTAINS 'e' RETURN n.name", extractor);
+        testWalker.acceptQuery(g, "MATCH (n:Gene) WHERE n.name CONTAINS 'e' RETURN n.name", extractor);
 
         System.out.println(testWalker.extractVariableFromWhereQuery(extractor, "e"));
-
-
 
 
 
@@ -109,17 +119,6 @@ class CypherWalkerTest
     public void matchWhereQuery2() throws IOException
     {
 
-        final Graph g = Graph.createTempGraph();
-        Node n = g.addNode("Gene");
-
-        // node = g.findNode("Gene", "test", "Hello");
-        //  node.setProperty("symbol", "IL10");
-
-        CypherWalker testWalker = new CypherWalker();
-
-        CypherExtractor extractor = new CypherExtractor();
-
-        testWalker.acceptQuery(g, "MATCH (n:Gene_A) WHERE n.GENE CONTAINS 'A' RETURN n.name", extractor);
 
     }
 
