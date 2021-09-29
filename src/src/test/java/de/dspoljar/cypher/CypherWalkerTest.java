@@ -19,21 +19,32 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node node = g.addNode("Gene");
-        node.setProperty("test", "Hello");
+        node.setProperty("n", "IL10");
         g.update(node);
+
+        String query = "MATCH (n:Gene) RETURN n";
 
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
-        testWalker.acceptQuery(g, "MATCH (n:Gene) RETURN n", extractor);
+        CypherResultConstructor results = new CypherResultConstructor();
+
+        results.nodeList.add(node);
+        results.nodePropertyList.put("n", node.getProperty("n"));
+        results.nodePropertyHashMapList.add(results.nodePropertyList);
+
 
         g.findNodes(node.getLabel(), "n");
 
+        testWalker.acceptQuery(g, query, extractor, results);
 
         Assertions.assertEquals("n", testWalker.extractSingleNodeLabel(extractor, "n"));
 
         System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
+
+       System.out.println(results.concatNodeResults());
+
 
        // node = g.findNode("Gene", "test", "n");
 
@@ -50,11 +61,15 @@ class CypherWalkerTest
         g.update(node);
         // node = g.findNode("Gene", "test", "Hello");
 
+        String query = "MATCH (n:Gene {symbol: \"IL10\"}) RETURN n";
+
+        CypherResultConstructor results = new CypherResultConstructor();
+
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
-        testWalker.acceptQuery(g, "MATCH (n:Gene {symbol: \"IL10\"}) RETURN n", extractor);
+        testWalker.acceptQuery(g, query, extractor, results);
 
         g.findNodes(node.getLabel(), "symbol", "IL10");
 
@@ -74,6 +89,10 @@ class CypherWalkerTest
         Node p = g.addNode("Protein");
         Edge r = g.addEdge(n, p, "CODES_FOR");
 
+        String query = "MATCH (g:Gene)-[r:CODES_FOR]->(p:Protein) RETURN g, r, p";
+
+        CypherResultConstructor results = new CypherResultConstructor();
+
         // node = g.findNode("Gene", "test", "Hello");
 
         CypherWalker testWalker = new CypherWalker();
@@ -82,9 +101,9 @@ class CypherWalkerTest
 
         g.getAdjacentNodeIdsForEdgeLabel(n.getId(), r.getLabel());
 
-        testWalker.acceptQuery(g, "MATCH (g:Gene)-[r:CODES_FOR]->(p:Protein) RETURN g, r, p", extractor);
+        testWalker.acceptQuery(g, query, extractor, results);
 
-        Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
+      //  Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
 
         System.out.println(testWalker.extractEdgeNodeLabels());
 
@@ -101,13 +120,17 @@ class CypherWalkerTest
         n.setProperty("name", "Test");
         g.update(n);
 
+        String query = "MATCH (n:Gene) WHERE n.name CONTAINS 'e' RETURN n.name";
+
+        CypherResultConstructor results = new CypherResultConstructor();
+
         // node = g.findNode("Gene", "test", "Hello");
 
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
-        testWalker.acceptQuery(g, "MATCH (n:Gene) WHERE n.name CONTAINS 'e' RETURN n.name", extractor);
+        testWalker.acceptQuery(g, query, extractor, results);
 
         System.out.println(testWalker.extractVariableFromWhereQuery(extractor, "e"));
 
