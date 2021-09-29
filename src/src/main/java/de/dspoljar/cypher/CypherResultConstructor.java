@@ -35,25 +35,35 @@ public class CypherResultConstructor
 
     }
 
+    public HashMap<String, String> hashMapFiller(String key, String value)
+    {
 
-    public HashMap<String, HashMap> concatNodeResults()
+        HashMap<String, String> tempProperties = new HashMap<String, String>();
+        tempProperties.put(key, value);
+
+
+        return tempProperties;
+
+    }
+
+
+    public HashMap<String, HashMap> concatResults(LinkedList<Node> nodeList, LinkedList<HashMap> hashMapList)
     {
 
         HashMap<String, HashMap> concatLists = new HashMap<String, HashMap>();
 
-        for (int i = 0; i < this.nodeList.size(); i++)
+        for (int i = 0; i < nodeList.size(); i++)
         {
-            for (int j = 0; j < this.nodePropertyHashMapList.size(); j++)
-            {
 
-                concatLists.put(this.nodeList.get(i).getLabel(), this.nodePropertyHashMapList.get(j));
+                concatLists.put(nodeList.get(i).getLabel(), hashMapList.get(i));
 
-            }
 
         }
 
         return concatLists;
     }
+
+
 
 
 

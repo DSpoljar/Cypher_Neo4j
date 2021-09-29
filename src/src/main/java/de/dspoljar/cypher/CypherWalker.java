@@ -210,12 +210,14 @@ public class CypherWalker
 
         }
 
+        System.out.println("FINAL: "+results.concatResults(results.nodeList, results.nodePropertyHashMapList));
+
 
         //extractSingleNodeLabel(this.extractor, "n"); // Extracts variable
         //extractMapNodeLabel(this.extractor, "IL10"); // Extracts symbol
 
 
-        extractEdgeNodeLabels(); // Extracts chain
+        //extractEdgeNodeLabels(); // Extracts chain
        // extractVariableFromWhereQuery(this.extractor, "name"); // Extracts variable (WHERE)
 
 
@@ -226,7 +228,6 @@ public class CypherWalker
         //System.out.println("Symbol extraction: " + extractMapNodeLabel(this.extractor, "IL10") ); // Extracts symbol
        //System.out.println("Edge/node and variable extraction: " + extractEdgeNodeLabels(this.extractor) ); // Extracts chain
         //System.out.println("Variable (W) extraction: " + extractVariableFromWhereQuery(this.extractor, "name") ); // Extracts variable (WHERE)
-
 
         //return null;
     }

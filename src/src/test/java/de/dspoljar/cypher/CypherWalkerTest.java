@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,16 +35,15 @@ class CypherWalkerTest
         results.nodePropertyList.put("n", node.getProperty("n"));
         results.nodePropertyHashMapList.add(results.nodePropertyList);
 
-
         g.findNodes(node.getLabel(), "n");
 
         testWalker.acceptQuery(g, query, extractor, results);
 
         Assertions.assertEquals("n", testWalker.extractSingleNodeLabel(extractor, "n"));
 
-        System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
+        //System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
 
-       System.out.println(results.concatNodeResults());
+        //System.out.println(results.concatResults(results.nodeList, results.nodePropertyHashMapList));
 
 
        // node = g.findNode("Gene", "test", "n");
@@ -63,11 +63,17 @@ class CypherWalkerTest
 
         String query = "MATCH (n:Gene {symbol: \"IL10\"}) RETURN n";
 
-        CypherResultConstructor results = new CypherResultConstructor();
 
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
+
+        CypherResultConstructor results = new CypherResultConstructor();
+
+        results.nodeList.add(node);
+        results.nodePropertyList.put("symbol", node.getProperty("symbol"));
+        results.nodePropertyHashMapList.add(results.nodePropertyList);
+
 
         testWalker.acceptQuery(g, query, extractor, results);
 
@@ -76,7 +82,7 @@ class CypherWalkerTest
 
         Assertions.assertEquals("\"IL10\"", testWalker.extractMapNodeLabel(extractor, "IL10"));
 
-        System.out.println(testWalker.extractMapNodeLabel(extractor, "IL10"));
+         System.out.println(testWalker.extractMapNodeLabel(extractor, "IL10"));
 
     }
 
@@ -86,12 +92,13 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node n = g.addNode("Gene");
+        n.setProperty("key1", "IL10");
         Node p = g.addNode("Protein");
+        p.setProperty("key2", "AL10");
         Edge r = g.addEdge(n, p, "CODES_FOR");
 
         String query = "MATCH (g:Gene)-[r:CODES_FOR]->(p:Protein) RETURN g, r, p";
 
-        CypherResultConstructor results = new CypherResultConstructor();
 
         // node = g.findNode("Gene", "test", "Hello");
 
@@ -100,6 +107,17 @@ class CypherWalkerTest
         CypherExtractor extractor = new CypherExtractor();
 
         g.getAdjacentNodeIdsForEdgeLabel(n.getId(), r.getLabel());
+
+        CypherResultConstructor results = new CypherResultConstructor();
+
+        results.nodeList.add(n);
+        results.nodeList.add(p);
+        results.edgeList.add(r);
+        HashMap<String, String> nProperties = results.hashMapFiller("key1", n.getProperty("key1"));
+        HashMap<String, String> pProperties = results.hashMapFiller("key2", p.getProperty("key2"));
+        results.nodePropertyHashMapList.add(nProperties);
+        results.nodePropertyHashMapList.add(pProperties);
+
 
         testWalker.acceptQuery(g, query, extractor, results);
 
@@ -117,18 +135,23 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node n = g.addNode("Gene");
-        n.setProperty("name", "Test");
+        n.setProperty("name", "e");
         g.update(n);
 
         String query = "MATCH (n:Gene) WHERE n.name CONTAINS 'e' RETURN n.name";
 
-        CypherResultConstructor results = new CypherResultConstructor();
 
         // node = g.findNode("Gene", "test", "Hello");
 
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
+
+        CypherResultConstructor results = new CypherResultConstructor();
+
+        results.nodeList.add(n);
+        results.nodePropertyList.put("name", n.getProperty("name"));
+        results.nodePropertyHashMapList.add(results.nodePropertyList);
 
         testWalker.acceptQuery(g, query, extractor, results);
 
