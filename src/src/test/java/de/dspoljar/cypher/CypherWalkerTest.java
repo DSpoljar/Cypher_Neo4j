@@ -37,7 +37,7 @@ class CypherWalkerTest
 
         g.findNodes(node.getLabel(), "n");
 
-        testWalker.acceptQuery(g, query, extractor, results);
+        testWalker.acceptQuery(g, query, extractor, results, "n");
 
         Assertions.assertEquals("n", testWalker.extractSingleNodeLabel(extractor, "n"));
 
@@ -75,7 +75,7 @@ class CypherWalkerTest
         results.nodePropertyHashMapList.add(results.nodePropertyList);
 
 
-        testWalker.acceptQuery(g, query, extractor, results);
+        testWalker.acceptQuery(g, query, extractor, results, "IL10");
 
         g.findNodes(node.getLabel(), "symbol", "IL10");
 
@@ -119,7 +119,7 @@ class CypherWalkerTest
         results.nodePropertyHashMapList.add(pProperties);
 
 
-        testWalker.acceptQuery(g, query, extractor, results);
+        testWalker.acceptQuery(g, query, extractor, results, null);
 
       //  Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
 
@@ -153,7 +153,7 @@ class CypherWalkerTest
         results.nodePropertyList.put("name", n.getProperty("name"));
         results.nodePropertyHashMapList.add(results.nodePropertyList);
 
-        testWalker.acceptQuery(g, query, extractor, results);
+        testWalker.acceptQuery(g, query, extractor, results, "e");
 
         System.out.println(testWalker.extractVariableFromWhereQuery(extractor, "e"));
 

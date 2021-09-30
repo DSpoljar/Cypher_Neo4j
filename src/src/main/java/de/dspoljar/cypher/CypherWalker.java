@@ -153,6 +153,7 @@ public class CypherWalker
 
 
         }
+
         else
         {
 
@@ -167,7 +168,7 @@ public class CypherWalker
 
 
 
-    public void acceptQuery(Graph graph, String query, CypherExtractor extractor, CypherResultConstructor results)
+    public void acceptQuery(Graph graph, String query, CypherExtractor extractor, CypherResultConstructor results, String var)
     {
 
         CharStream stream = (CharStream) CharStreams.fromString(query);
@@ -210,7 +211,47 @@ public class CypherWalker
 
         }
 
-        System.out.println("FINAL: "+results.concatResults(results.nodeList, results.nodePropertyHashMapList));
+
+        final HashMap<String, HashMap> finalResults = results.concatResults(results.nodeList, results.nodePropertyHashMapList);
+
+        System.out.println("FINAL: "+finalResults);
+
+        if (extractSingleNodeLabel(this.extractor, var) != null)
+        {
+
+            for (int i = 0; i < results.nodeList.size(); i++)
+            {
+
+
+                if (finalResults.values().toString().contains(var))
+                {
+                    System.out.println(finalResults);
+
+                }
+
+            }
+
+        }
+
+        if (extractMapNodeLabel(this.extractor, var) != null)
+        {
+
+
+
+        }
+
+        if (extractEdgeNodeLabels() != null)
+        {
+
+
+
+        }
+
+        if (extractVariableFromWhereQuery(extractor, var) != null)
+        {
+
+
+        }
 
 
         //extractSingleNodeLabel(this.extractor, "n"); // Extracts variable
