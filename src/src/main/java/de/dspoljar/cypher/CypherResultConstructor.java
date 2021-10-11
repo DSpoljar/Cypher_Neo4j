@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class CypherResultConstructor
 {
 
-    public LinkedList<String> resultList = new LinkedList<String>();
+    public LinkedList<String> variableList = new LinkedList<String>();
 
     public LinkedList<Node> nodeList = new LinkedList<Node>();
 
@@ -28,9 +28,15 @@ public class CypherResultConstructor
     public CypherResultConstructor()
     {
 
+        /*
+        this.nodeList = nodeList;
+        this.nodePropertyHashMapList = nodePropertyHashMapList;
+        this.edgeList = edgeList;
+        this.variableList = variableList;
+        */
 
 
-       // resultList = this.resultList;
+
 
 
     }
@@ -72,14 +78,14 @@ public class CypherResultConstructor
     public LinkedList<String> getResultList()
     {
 
-        return resultList;
+        return variableList;
 
     }
 
     public void setResultList(LinkedList<String> resultList)
     {
 
-        this.resultList = resultList;
+        this.variableList = resultList;
     }
 
     public LinkedList<Node> getNodeList()
@@ -103,6 +109,8 @@ public class CypherResultConstructor
     {
         this.edgeList = edgeList;
     }
+
+
 
 
 

@@ -11,6 +11,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,16 +24,19 @@ public class CypherWalker
      CypherExtractor extractor = new CypherExtractor();
      CypherExtractor.HashMapper hashCollector = extractor.new HashMapper();
      final List<String> variableKeyList = new ArrayList<String>();
-     final List<String> nameValueList = new ArrayList<String>();
-     public HashMap<String, String> chainedLabelAndVariable = new HashMap<String, String>();
+     final List<Node> nameValueList = new ArrayList<Node>();
+
+    final Graph g = Graph.createTempGraph();
+
+     public HashMap<Node, String> chainedLabelAndVariable = new HashMap<Node, String>();
+     public HashMap<String, String> keyAndProperties = new HashMap<String, String>();
      public CypherResultConstructor resultObject = new CypherResultConstructor();
 
 
     final List<String> executeVariableClauseList = new ArrayList<String>();
 
 
-    public CypherWalker()
-    {
+    public CypherWalker() throws IOException {
 
         super();
       //  CypherParser cyphPars = new CypherParser(tokenStream)
@@ -91,33 +96,27 @@ public class CypherWalker
 
     }
 
-    public String extractMapNodeLabel(CypherExtractor extractor, String variable)
+    public HashMap<String, String> extractMapNodeLabel()
     {
 
 
-
-        if (this.hashCollector.nodesLabels.containsKey("LITERAL_CLAUSE"))
-        {
-
-            String targetVar = this.hashCollector.nodesLabels.getOrDefault("LITERAL_CLAUSE", variable);
-
-            return targetVar;
-
-        }
-
-        else
+        for (int i = 0; i < this.hashCollector.propertyLabelList.size(); i++)
         {
 
 
-            return "Key and/or Variable not in list.";
+                this.keyAndProperties.put(this.hashCollector.propertyKeyList.get(i), this.hashCollector.propertyLabelList.get(i));
+
+
 
         }
 
+
+        return this.keyAndProperties;
     }
 
     // For "matchChainedLabel" test.
 
-    public HashMap<String, String> extractEdgeNodeLabels()
+    public Map<Node, String> extractEdgeNodeLabelsAndVariables()
     {
 
 
@@ -125,6 +124,7 @@ public class CypherWalker
 
         for (int i = 0; i < this.nameValueList.size(); i++)
         {
+
 
             this.chainedLabelAndVariable.put(this.nameValueList.get(i), this.variableKeyList.get(i));
 
@@ -168,7 +168,7 @@ public class CypherWalker
 
 
 
-    public void acceptQuery(Graph graph, String query, CypherExtractor extractor, CypherResultConstructor results, String var)
+    public CypherResultConstructor acceptQuery(Graph graph, String query)
     {
 
         CharStream stream = (CharStream) CharStreams.fromString(query);
@@ -212,46 +212,22 @@ public class CypherWalker
         }
 
 
-        final HashMap<String, HashMap> finalResults = results.concatResults(results.nodeList, results.nodePropertyHashMapList);
 
-        System.out.println("FINAL: "+finalResults);
-
-        if (extractSingleNodeLabel(this.extractor, var) != null)
+        for (Map.Entry<Node, String> nodeAndVariable : extractEdgeNodeLabelsAndVariables().entrySet())
         {
-
-            for (int i = 0; i < results.nodeList.size(); i++)
-            {
-
-
-                if (finalResults.values().toString().contains(var))
-                {
-                    System.out.println(finalResults);
-
-                }
-
-            }
-
-        }
-
-        if (extractMapNodeLabel(this.extractor, var) != null)
-        {
-
+            resultObject.nodeList.add((nodeAndVariable.getKey()));
+            resultObject.variableList.add(nodeAndVariable.getValue());
 
 
         }
 
-        if (extractEdgeNodeLabels() != null)
-        {
 
 
 
-        }
-
-        if (extractVariableFromWhereQuery(extractor, var) != null)
-        {
 
 
-        }
+
+
 
 
         //extractSingleNodeLabel(this.extractor, "n"); // Extracts variable
@@ -270,7 +246,7 @@ public class CypherWalker
        //System.out.println("Edge/node and variable extraction: " + extractEdgeNodeLabels(this.extractor) ); // Extracts chain
         //System.out.println("Variable (W) extraction: " + extractVariableFromWhereQuery(this.extractor, "name") ); // Extracts variable (WHERE)
 
-        //return null;
+        return resultObject;
     }
 
     private void executeStatement(final CypherParser.OC_StatementContext statement)
@@ -1021,18 +997,19 @@ public class CypherWalker
         {
              //System.out.println("OC_SymbolicName: "+ query.oC_SymbolicName().toString());
            // System.out.println("OC_SymbolicName_TERMINAL: "+ query.oC_SymbolicName().children.toString()); // Returns label/name
-            String label = query.oC_SymbolicName().children.toString();
+           // String label = query.oC_SymbolicName().children.toString();
+            Node label = g.addNode(query.oC_SymbolicName().children.toString());
            // System.out.println(label);
             this.nameValueList.add(label);
 
             // SINGLE & CHAINED LABEL QUERY
-            this.extractor.saveLabels(label);
-            this.hashCollector.mapper(node, label);
-            this.hashCollector.edgeAndNodeList.add(query.oC_SymbolicName().children.toString());
+            //this.extractor.saveLabels(label);
+            //this.hashCollector.mapper(node, label);
+            //this.hashCollector.edgeAndNodeList.add(query.oC_SymbolicName().children.toString());
 
             // WHERE QUERY
-            this.hashCollector.whereMapper(node, label);
-            this.hashCollector.whereVarList.add(label);
+            //this.hashCollector.whereMapper(node, label);
+            //this.hashCollector.whereVarList.add(label);
             executeSymbolicNameClause(query.oC_SymbolicName());
 
 
@@ -1600,6 +1577,8 @@ public class CypherWalker
         //System.out.println("LITERALCHILDREN: "+query.children.toString()); // <-- IL10 / SYMBOL is here!
         System.out.println("Symbol: "+query.getChild(0).toString());
         String label = query.getChild(0).toString();
+        this.hashCollector.propertyLabelList.add(label);
+
         this.extractor.saveLabels(label);
         this.hashCollector.mapper(node, label);
 

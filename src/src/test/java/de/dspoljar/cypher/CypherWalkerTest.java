@@ -18,30 +18,25 @@ class CypherWalkerTest
     public void matchSingleNodeLabel() throws IOException
     {
 
+
+
         final Graph g = Graph.createTempGraph();
         Node node = g.addNode("Gene");
         node.setProperty("n", "IL10");
         g.update(node);
-
         String query = "MATCH (n:Gene) RETURN n";
 
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
-        CypherResultConstructor results = new CypherResultConstructor();
+        CypherResultConstructor results = testWalker.acceptQuery(g, query);
 
-        results.nodeList.add(node);
-        results.nodePropertyList.put("n", node.getProperty("n"));
-        results.nodePropertyHashMapList.add(results.nodePropertyList);
-
-        g.findNodes(node.getLabel(), "n");
-
-        testWalker.acceptQuery(g, query, extractor, results, "n");
-
-        Assertions.assertEquals("n", testWalker.extractSingleNodeLabel(extractor, "n"));
+       assertEquals(node.getId(), results.nodeList.get(0).getId());
 
         //System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
+
+        System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
 
         //System.out.println(results.concatResults(results.nodeList, results.nodePropertyHashMapList));
 
@@ -68,21 +63,20 @@ class CypherWalkerTest
 
         CypherExtractor extractor = new CypherExtractor();
 
-        CypherResultConstructor results = new CypherResultConstructor();
-
-        results.nodeList.add(node);
-        results.nodePropertyList.put("symbol", node.getProperty("symbol"));
-        results.nodePropertyHashMapList.add(results.nodePropertyList);
+        CypherResultConstructor results = testWalker.acceptQuery(g, query);
 
 
-        testWalker.acceptQuery(g, query, extractor, results, "IL10");
+
+     //   testWalker.acceptQuery(g, query, extractor, results, "IL10");
 
         g.findNodes(node.getLabel(), "symbol", "IL10");
 
 
-        Assertions.assertEquals("\"IL10\"", testWalker.extractMapNodeLabel(extractor, "IL10"));
 
-         System.out.println(testWalker.extractMapNodeLabel(extractor, "IL10"));
+
+        //Assertions.assertEquals("\"IL10\"", testWalker.extractMapNodeLabel(extractor, "IL10"));
+
+         System.out.println(testWalker.extractMapNodeLabel());
 
     }
 
@@ -108,22 +102,14 @@ class CypherWalkerTest
 
         g.getAdjacentNodeIdsForEdgeLabel(n.getId(), r.getLabel());
 
-        CypherResultConstructor results = new CypherResultConstructor();
-
-        results.nodeList.add(n);
-        results.nodeList.add(p);
-        results.edgeList.add(r);
-        HashMap<String, String> nProperties = results.hashMapFiller("key1", n.getProperty("key1"));
-        HashMap<String, String> pProperties = results.hashMapFiller("key2", p.getProperty("key2"));
-        results.nodePropertyHashMapList.add(nProperties);
-        results.nodePropertyHashMapList.add(pProperties);
 
 
-        testWalker.acceptQuery(g, query, extractor, results, null);
+
+        testWalker.acceptQuery(g, query);
 
       //  Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
 
-        System.out.println(testWalker.extractEdgeNodeLabels());
+        System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
 
 
 
@@ -153,7 +139,7 @@ class CypherWalkerTest
         results.nodePropertyList.put("name", n.getProperty("name"));
         results.nodePropertyHashMapList.add(results.nodePropertyList);
 
-        testWalker.acceptQuery(g, query, extractor, results, "e");
+       // testWalker.acceptQuery(g, query, extractor, results, "e");
 
         System.out.println(testWalker.extractVariableFromWhereQuery(extractor, "e"));
 
@@ -161,12 +147,6 @@ class CypherWalkerTest
 
     }
 
-    @Test
-    public void matchWhereQuery2() throws IOException
-    {
-
-
-    }
 
 
 

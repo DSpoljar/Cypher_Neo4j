@@ -43,6 +43,10 @@ public class CypherExtractor
 
         public List<String> variableList = new ArrayList<String>();
 
+        public List<String> propertyKeyList = new ArrayList<String>();
+
+        public List<String> propertyLabelList = new ArrayList<String>();
+
         public HashMap<String, String> variableCollector = new HashMap<String, String>();
 
         public HashMap<String, String> edgeCollector = new HashMap<String, String>();
