@@ -40,6 +40,8 @@ public class CypherWalker
 
     public boolean isNode = false;
     public boolean isEdge = false;
+    public boolean isProperty = false;
+
 
 
     public CypherWalker() throws IOException
@@ -235,19 +237,17 @@ public class CypherWalker
 
         } */
 
-        for (int j = 0; j < resultObject.nodeList.size(); j++)
-        {
-
-            Iterable<Node> tempNode = graph.findNodes(resultObject.nodeList.get(j));
-            System.out.println("TEMPNODE: "+tempNode);
-
-        }
-
-
 
 
         hashCollector.NodeLabelMapper();
         hashCollector.EdgeLabelMapper();
+        hashCollector.PropertyMapper();
+
+      //  Iterable<Node> nodesInGraph =  graph.getNodes();
+
+      //  resultObject.mapNodes(hashCollector.NodeStringList, nodesInGraph);
+
+
 
 
 
@@ -1030,6 +1030,12 @@ public class CypherWalker
                 hashCollector.NodeStringList.add(label);
 
             }
+            else if (label.contains("symbol"))
+            {
+                isProperty = true;
+                hashCollector.propertyKeyList.add(label);
+            }
+
             else
             {
                 isEdge = true;
@@ -1615,7 +1621,12 @@ public class CypherWalker
         //System.out.println("LITERALCHILDREN: "+query.children.toString()); // <-- IL10 / SYMBOL is here!
         System.out.println("Symbol: "+query.getChild(0).toString());
         String label = query.getChild(0).toString();
-        this.hashCollector.propertyLabelList.add(label);
+       // this.hashCollector.propertyLabelList.add(label);
+
+        if (!label.contains("Gene") || ! label.contains("Protein") && !this.hashCollector.propertyLabelList.contains(label))
+        {
+            this.hashCollector.propertyLabelList.add(label); // Should add identifiers as "IL10".
+        }
 
       //  this.extractor.saveLabels(label);
       //  this.hashCollector.mapper(node, label);
@@ -1697,6 +1708,16 @@ public class CypherWalker
                 this.hashCollector.variableEdgeList.add(variable);
                 System.out.println("IS EDGE");
                 isEdge = false;
+
+            }
+
+            else if (isProperty == true && ! hashCollector.variableNodeList.contains(variable)
+                     && ! hashCollector.propertyLabelList.contains(variable))
+            {
+
+                this.hashCollector.propertyLabelList.add(variable);
+                System.out.println("IS PROPERTY");
+                isProperty = false;
 
             }
 

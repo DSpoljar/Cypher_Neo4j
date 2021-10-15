@@ -13,7 +13,7 @@ public class CypherResultConstructor
 
     public LinkedList<String> variableList = new LinkedList<String>();
 
-    public LinkedList<String> nodeList = new LinkedList<String>();
+    public LinkedList<Node> nodeList = new LinkedList<Node>();
 
     public HashMap<String, String> nodePropertyList = new HashMap<String, String>();
 
@@ -41,6 +41,34 @@ public class CypherResultConstructor
 
 
     }
+
+    public Map<String, Node> mapNodes(LinkedList<String> StringVarList, LinkedList<Node> nodes)
+    {
+        Map<String, Node> nodeLabelVariableList = new HashMap<String, Node>();
+
+        for (int i = 0; i < nodeList.size(); i++)
+        {
+
+            if (StringVarList.get(i) == nodes.get(i).getLabel())
+            {
+                nodeLabelVariableList.put(StringVarList.get(i), nodes.get(i));
+
+            }
+
+
+
+
+        }
+
+        return nodeLabelVariableList;
+
+    }
+
+
+
+
+
+
 
     public HashMap<String, String> hashMapFiller(String key, String value)
     {
@@ -105,13 +133,13 @@ public class CypherResultConstructor
         this.variableList = resultList;
     }
 
-    public LinkedList<String> getNodeList()
+    public LinkedList<Node> getNodeList()
     {
         return nodeList;
 
     }
 
-    public void setNodeList(LinkedList<String> nodeList)
+    public void setNodeList(LinkedList<Node> nodeList)
     {
         this.nodeList = nodeList;
 

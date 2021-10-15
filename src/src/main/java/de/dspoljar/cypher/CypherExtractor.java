@@ -21,13 +21,13 @@ public class CypherExtractor
     {
 
 
-        public List<String> NodeStringList = new ArrayList<String>();
+        public LinkedList<String> NodeStringList = new LinkedList<String>();
 
         public List<String> variableNodeList = new ArrayList<String>(); // Variables as "n, g, ..." pertaining to Nodes. Node Gene -> n etc.
 
         public List<String> variableEdgeList = new ArrayList<String>(); // Variables ... pertaining to Edges.
 
-        public List<String> EdgeStringList = new ArrayList<String>();
+        public LinkedList<String> EdgeStringList = new LinkedList<String>();
 
         public HashMap<String, String> nodesLabelsMap = new HashMap<String, String>(); // Labels of nodes related to their variables.
 
@@ -81,6 +81,27 @@ public class CypherExtractor
             }
 
             System.out.println(this.edgesLabelsMap);
+
+        }
+
+        // Maps Properties to each other.
+
+        public void PropertyMapper()
+        {
+
+
+            //System.out.println(propertyKeyList.toString());
+
+
+
+
+            for (int i = 0; i < propertyLabelList.size(); i++)
+            {
+                this.propertyCollector.put(propertyKeyList.get(i), propertyLabelList.get(i));
+
+            }
+
+            System.out.println(this.propertyCollector);
 
         }
 
