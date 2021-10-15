@@ -6,13 +6,14 @@ import sun.awt.image.ImageWatched;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class CypherResultConstructor
 {
 
     public LinkedList<String> variableList = new LinkedList<String>();
 
-    public LinkedList<Node> nodeList = new LinkedList<Node>();
+    public LinkedList<String> nodeList = new LinkedList<String>();
 
     public HashMap<String, String> nodePropertyList = new HashMap<String, String>();
 
@@ -69,6 +70,22 @@ public class CypherResultConstructor
         return concatLists;
     }
 
+    public Map<String, Node> nodeLabel(LinkedList<String> variableOfNodeList, LinkedList<Node> nodeList)
+    {
+        Map<String, Node> nodeLabelVariableList = new HashMap<String, Node>();
+
+        for (int i = 0; i < nodeList.size(); i++)
+        {
+
+            nodeLabelVariableList.put(variableOfNodeList.get(i), nodeList.get(i));
+
+
+        }
+
+        return nodeLabelVariableList;
+
+    }
+
 
 
 
@@ -88,13 +105,13 @@ public class CypherResultConstructor
         this.variableList = resultList;
     }
 
-    public LinkedList<Node> getNodeList()
+    public LinkedList<String> getNodeList()
     {
         return nodeList;
 
     }
 
-    public void setNodeList(LinkedList<Node> nodeList)
+    public void setNodeList(LinkedList<String> nodeList)
     {
         this.nodeList = nodeList;
 

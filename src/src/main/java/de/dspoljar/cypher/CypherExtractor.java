@@ -15,47 +15,33 @@ public class CypherExtractor
 
     }
 
-    public List<String> saveLabels(String label)
-    {
 
-        this.labelStorage.add(label);
-
-        return this.labelStorage;
-
-
-    }
-
-    public List<String> saveVariables(String variable)
-    {
-
-
-
-        this.variableStorage.add(variable);
-
-        return this.variableStorage;
-
-
-    }
 
     public class HashMapper
     {
-        public HashMap<String, String> nodesLabels = new HashMap<String, String>();
 
-        public List<String> variableList = new ArrayList<String>();
 
-        public List<String> propertyKeyList = new ArrayList<String>();
+        public List<String> NodeStringList = new ArrayList<String>();
 
-        public List<String> propertyLabelList = new ArrayList<String>();
+        public List<String> variableNodeList = new ArrayList<String>(); // Variables as "n, g, ..." pertaining to Nodes. Node Gene -> n etc.
+
+        public List<String> variableEdgeList = new ArrayList<String>(); // Variables ... pertaining to Edges.
+
+        public List<String> EdgeStringList = new ArrayList<String>();
+
+        public HashMap<String, String> nodesLabelsMap = new HashMap<String, String>(); // Labels of nodes related to their variables.
+
+        public HashMap<String, String> edgesLabelsMap = new HashMap<String, String>(); // Labels of Edges related to their variables.
+
+        public List<String> propertyKeyList = new ArrayList<String>();  // Properties of Nodes (Key). Keyword can be "symbol"
+
+        public List<String> propertyLabelList = new ArrayList<String>(); // Properties of Nodes (Variable/Label). Can be a gene identifier etc.
+
+        public HashMap<String, String> propertyCollector = new HashMap<String, String>(); // Collects and saves properties.
 
         public HashMap<String, String> variableCollector = new HashMap<String, String>();
 
-        public HashMap<String, String> edgeCollector = new HashMap<String, String>();
-
-        public List<String> edgeAndNodeList = new ArrayList<String>();
-
-        public HashMap<String, String> whereVarCollector = new HashMap<String, String>();
-
-        public List<String> whereVarList = new ArrayList<String>();
+        public List<String> whereVarList = new ArrayList<String>(); // Will contain extracted variables from WHERE query.
 
         public HashMapper()
         {
@@ -63,81 +49,46 @@ public class CypherExtractor
         }
 
 
-        public void mapper(String node, String variable)
+
+        // Maps Variable -> Nodes
+
+        public void NodeLabelMapper()
         {
 
 
-            this.nodesLabels.put(node, variable);
-            this.variableList.add(variable);
-
-
-        }
-
-        public void edgeMapper(List<String> nodeEdgeList, List<String> variableList)
-        {
-
-
-
-            for (int i = 0; i  < nodeEdgeList.size(); i++)
+            for (int i = 0; i < variableNodeList.size(); i++)
             {
-
-
-                this.edgeCollector.put(nodeEdgeList.get(i), variableList.get(i));
-
+                this.nodesLabelsMap.put(variableNodeList.get(i), NodeStringList.get(i));
 
             }
 
-
-        }
-
-        public void edgeMapper_2(String nodeLabel, String content)
-        {
-
-
-
-                this.edgeCollector.put(nodeLabel, content);
+           // this.nodesLabels.put(node, variable);
+           // this.variableList.add(variable);
+            System.out.println(this.nodesLabelsMap);
 
 
         }
 
-        public void whereMapper(String node, String variable)
+        // Maps Variable -> Edges
+
+        public void EdgeLabelMapper()
         {
 
-            this.whereVarCollector.put(node, variable);
-            this.whereVarList.add(variable);
-
-        }
-
-
-        public HashMap<String, String> getVariableCollector()
-        {
-            return variableCollector;
-        }
-
-        public HashMap<String, String> getNodesLabels()
-        {
-            return nodesLabels;
-        }
-
-        public String getVariableOutOfList(List<String> variableList, String variable)
-        {
-
-            if (variableList.contains(variable))
+            for (int i = 0; i < variableEdgeList.size(); i++)
             {
-
-                return variable;
-
-            }
-            else
-            {
-
-                return "Variable not in list";
+                this.edgesLabelsMap.put(variableEdgeList.get(i), EdgeStringList.get(i));
 
             }
 
+            System.out.println(this.edgesLabelsMap);
+
         }
+
+
 
     }
+
+
 
 
 }

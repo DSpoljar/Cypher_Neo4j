@@ -28,15 +28,15 @@ class CypherWalkerTest
 
         CypherWalker testWalker = new CypherWalker();
 
-        CypherExtractor extractor = new CypherExtractor();
+      //  CypherExtractor extractor = new CypherExtractor();
 
         CypherResultConstructor results = testWalker.acceptQuery(g, query);
 
-       assertEquals(node.getId(), results.nodeList.get(0).getId());
-
         //System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
 
-        System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
+       // System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
+
+     //   assertEquals(node.getId(), results.get(0).get("n").getId());
 
         //System.out.println(results.concatResults(results.nodeList, results.nodePropertyHashMapList));
 
@@ -69,7 +69,7 @@ class CypherWalkerTest
 
      //   testWalker.acceptQuery(g, query, extractor, results, "IL10");
 
-        g.findNodes(node.getLabel(), "symbol", "IL10");
+     //   g.findNodes(node.getLabel(), "symbol", "IL10");
 
 
 
@@ -94,13 +94,11 @@ class CypherWalkerTest
         String query = "MATCH (g:Gene)-[r:CODES_FOR]->(p:Protein) RETURN g, r, p";
 
 
-        // node = g.findNode("Gene", "test", "Hello");
-
         CypherWalker testWalker = new CypherWalker();
 
         CypherExtractor extractor = new CypherExtractor();
 
-        g.getAdjacentNodeIdsForEdgeLabel(n.getId(), r.getLabel());
+       // g.getAdjacentNodeIdsForEdgeLabel(n.getId(), r.getLabel());
 
 
 
@@ -109,7 +107,7 @@ class CypherWalkerTest
 
       //  Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
 
-        System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
+       // System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
 
 
 
@@ -135,13 +133,11 @@ class CypherWalkerTest
 
         CypherResultConstructor results = new CypherResultConstructor();
 
-        results.nodeList.add(n);
-        results.nodePropertyList.put("name", n.getProperty("name"));
-        results.nodePropertyHashMapList.add(results.nodePropertyList);
+
 
        // testWalker.acceptQuery(g, query, extractor, results, "e");
 
-        System.out.println(testWalker.extractVariableFromWhereQuery(extractor, "e"));
+       // System.out.println(testWalker.extractVariableFromWhereQuery("e"));
 
 
 
