@@ -90,7 +90,9 @@ public class CypherExtractor
         {
 
 
-            //System.out.println(propertyKeyList.toString());
+           // System.out.println(propertyKeyList.toString());
+          //  System.out.println(propertyLabelList.toString());
+
 
 
 
@@ -104,6 +106,8 @@ public class CypherExtractor
             System.out.println(this.propertyCollector);
 
         }
+
+
 
 
 

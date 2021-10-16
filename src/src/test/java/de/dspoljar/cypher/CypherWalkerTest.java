@@ -76,7 +76,7 @@ class CypherWalkerTest
 
         //Assertions.assertEquals("\"IL10\"", testWalker.extractMapNodeLabel(extractor, "IL10"));
 
-         System.out.println(testWalker.extractMapNodeLabel());
+        // System.out.println(testWalker.extractMapNodeLabel());
 
     }
 
@@ -103,8 +103,7 @@ class CypherWalkerTest
 
 
 
-        testWalker.acceptQuery(g, query);
-
+        CypherResultConstructor results = testWalker.acceptQuery(g, query);
       //  Assertions.assertEquals("{[Protein]=p, [CODES_FOR]=r, [Gene]=g}", testWalker.extractEdgeNodeLabels().toString());
 
        // System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
@@ -131,8 +130,7 @@ class CypherWalkerTest
 
         CypherExtractor extractor = new CypherExtractor();
 
-        CypherResultConstructor results = new CypherResultConstructor();
-
+        CypherResultConstructor resultObject = testWalker.acceptQuery(g, query);
 
 
        // testWalker.acceptQuery(g, query, extractor, results, "e");

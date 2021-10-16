@@ -41,6 +41,7 @@ public class CypherWalker
     public boolean isNode = false;
     public boolean isEdge = false;
     public boolean isProperty = false;
+    public boolean isWhereQuery = false;
 
 
 
@@ -151,33 +152,6 @@ public class CypherWalker
     }
 
 
-    /*
-
-
-    public String extractVariableFromWhereQuery(String var)
-    {
-
-
-        if (this.hashCollector.whereVarCollector.containsKey("SCHEMA_CONTEXT"))
-        {
-
-            return this.hashCollector.variableCollector.getOrDefault("SCHEMA_CONTEXT", var);
-
-
-        }
-
-        else
-        {
-
-            return  "Key and/or Variable not in list.";
-
-
-        }
-
-
-    }
-*/
-
 
 
     public CypherResultConstructor acceptQuery(Graph graph, String query)
@@ -242,6 +216,7 @@ public class CypherWalker
         hashCollector.NodeLabelMapper();
         hashCollector.EdgeLabelMapper();
         hashCollector.PropertyMapper();
+        System.out.print(hashCollector.whereVarList.toString());
 
       //  Iterable<Node> nodesInGraph =  graph.getNodes();
 
@@ -280,10 +255,10 @@ public class CypherWalker
           //  System.out.println("OC_StandaloneCall:"+query.oC_StandaloneCall());
             query.oC_StandaloneCall();
         }
-        else if (query.oC_RegularQuery() != null)
+         if (query.oC_RegularQuery() != null)
         {
             executeSingleMultipleQuery(query.oC_RegularQuery());
-          //  System.out.println("OC_RegQuery:"+query.oC_RegularQuery());
+           System.out.println("OC_RegQuery:"+query.oC_RegularQuery());
 
         }
 
@@ -330,7 +305,7 @@ public class CypherWalker
             if (query.oC_ReadingClause(i) != null)
             {
 
-              //  System.out.println("OC_ReadingClause:"+query.oC_ReadingClause(i).toString()); // Write this in a variable later (if  required)
+             //   System.out.println("OC_ReadingClause:"+query.oC_ReadingClause(i).toString()); // Write this in a variable later (if  required)
                 executeReadingClause(query.oC_ReadingClause(i));
 
 
@@ -340,7 +315,7 @@ public class CypherWalker
              if (query.oC_UpdatingClause(i) != null)
             {
 
-                //System.out.println("OC_UpdatingClause:"+query.oC_UpdatingClause(i).toString());
+              //  System.out.println("OC_UpdatingClause:"+query.oC_UpdatingClause(i).toString());
                 executeUpdatingClause(query.oC_UpdatingClause(i));
 
             }
@@ -408,6 +383,7 @@ public class CypherWalker
             for (int i = 0; i < query.getChildCount(); i++)
             {
 
+                //System.out.println("Oc with: "+ query.oC_With(i).toString());
                 executeWhithClause(query.oC_With(i));
 
             }
@@ -498,7 +474,7 @@ public class CypherWalker
 
         }
 
-        else if (query.oC_Where() != null)
+        if (query.oC_Where() != null)
         {
 
             executeWhereClause(query.oC_Where());
@@ -532,15 +508,16 @@ public class CypherWalker
         if (query.oC_Pattern() != null)
         {
 
-            //System.out.println("OC Pattern: "+query.oC_Pattern().toString());
+            System.out.println("OC Pattern: "+query.oC_Pattern().toString());
             executePatternClause(query.oC_Pattern());
 
         }
 
-        else if (query.oC_Where() != null)
+         if (query.oC_Where() != null)
         {
 
-          executeWhereClause(query.oC_Where());
+            System.out.println("OC WHERE "+query.oC_Pattern().toString());
+            executeWhereClause(query.oC_Where());
 
         }
 
@@ -575,7 +552,7 @@ public class CypherWalker
         if (query.oC_Variable() != null)
         {
 
-            //System.out.println("OC_Variable: "+query.oC_Variable().toString());
+          //  System.out.println("OC_Variable: "+query.oC_Variable().toString());
 
             executeVariableClause(query.oC_Variable());
 
@@ -1408,7 +1385,7 @@ public class CypherWalker
         {
 
 
-            //System.out.print("OC_PropertyOrLabelExpression():"+query.oC_PropertyOrLabelsExpression().toString());
+          //  System.out.print("OC_PropertyOrLabelExpression():"+query.oC_PropertyOrLabelsExpression().toString());
             executePropertyOrLabelsExpressionContext(query.oC_PropertyOrLabelsExpression());
 
         }
@@ -1417,25 +1394,63 @@ public class CypherWalker
         {
 
 
+          //  System.out.print("OC_ListOper"+query.oC_ListOperatorExpression().toString());
+
         }
 
         if (query.oC_NullOperatorExpression(0) != null)
         {
 
 
+          //  System.out.print("OC_NullOper():"+query.oC_NullOperatorExpression().toString());
+
 
         }
 
-         if (query.oC_StringOperatorExpression(0) != null )
+        for (int i = 0; i < query.getChildCount(); i++)
         {
 
 
 
+            if (query.oC_StringOperatorExpression(i) != null )
+        {
+
+
+            System.out.print("OC_StringOper:"+query.oC_StringOperatorExpression().toString());
+            executeStringOperatorExpression(query.oC_StringOperatorExpression(i));
+
+
+        }
+
+
         }
 
 
 
+
+
     }
+
+    private void executeStringOperatorExpression(CypherParser.OC_StringOperatorExpressionContext statement)
+    {
+
+        final CypherParser.OC_StringOperatorExpressionContext query = statement;
+
+
+
+        if (query.oC_PropertyOrLabelsExpression() !=  null)
+        {
+
+            isWhereQuery = true; // From here on, we should know its a variable to extract
+           // System.out.print("OC_PropertyLabelExpress"+query.oC_PropertyOrLabelsExpression().toString());
+            executePropertyOrLabelsExpressionContext(query.oC_PropertyOrLabelsExpression());
+
+
+        }
+
+
+    }
+
 
     private void executePropertyOrLabelsExpressionContext(CypherParser.OC_PropertyOrLabelsExpressionContext statement)
     {
@@ -1447,7 +1462,7 @@ public class CypherWalker
         if (query.oC_Atom() !=  null)
         {
 
-         //   System.out.print("Oc_AtomExpression(): "+query.oC_Atom().children.toString());
+            System.out.print("Oc_AtomExpression(): "+query.oC_Atom().children.toString());
             executeAtomContext(query.oC_Atom());
 
         }
@@ -1623,9 +1638,21 @@ public class CypherWalker
         String label = query.getChild(0).toString();
        // this.hashCollector.propertyLabelList.add(label);
 
-        if (!label.contains("Gene") || ! label.contains("Protein") && !this.hashCollector.propertyLabelList.contains(label))
+        if ( (!label.contains("Gene") || ! label.contains("Protein")) && !this.hashCollector.propertyLabelList.contains(label) && isWhereQuery == false)
         {
+
             this.hashCollector.propertyLabelList.add(label); // Should add identifiers as "IL10".
+
+
+        }
+        if (isWhereQuery == true)
+        {
+
+
+            System.out.println("where label: "+label);
+            this.hashCollector.whereVarList.add(label);
+            isWhereQuery = false;
+
         }
 
       //  this.extractor.saveLabels(label);
@@ -1711,15 +1738,7 @@ public class CypherWalker
 
             }
 
-            else if (isProperty == true && ! hashCollector.variableNodeList.contains(variable)
-                     && ! hashCollector.propertyLabelList.contains(variable))
-            {
 
-                this.hashCollector.propertyLabelList.add(variable);
-                System.out.println("IS PROPERTY");
-                isProperty = false;
-
-            }
 
 
             //System.out.println("Variableclause: "+query.oC_SymbolicName().toString());
