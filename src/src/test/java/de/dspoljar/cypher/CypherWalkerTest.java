@@ -25,23 +25,12 @@ class CypherWalkerTest
         node.setProperty("n", "IL10");
         g.update(node);
         String query = "MATCH (n:Gene) RETURN n";
-
         CypherWalker testWalker = new CypherWalker();
-
-      //  CypherExtractor extractor = new CypherExtractor();
-
         CypherResultConstructor results = testWalker.acceptQuery(g, query);
 
-        //System.out.println(testWalker.extractSingleNodeLabel(extractor, "n"));
-
-       // System.out.println(testWalker.extractEdgeNodeLabelsAndVariables());
-
-     //   assertEquals(node.getId(), results.get(0).get("n").getId());
-
-        //System.out.println(results.concatResults(results.nodeList, results.nodePropertyHashMapList));
+       // assertEquals(node.getId(), results.get(0).get("n").getId());
 
 
-       // node = g.findNode("Gene", "test", "n");
 
 
     }
