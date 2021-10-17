@@ -8,6 +8,8 @@ import java.util.Map;
 public class CypherResultConstructor
 {
 
+    public final HashMap<String, Node> resultVarsNodes = new HashMap<String, Node>();
+
 
 
 
@@ -17,10 +19,13 @@ public class CypherResultConstructor
 
     }
 
-    public HashMap<String, Node> variableNodeMapper()
+    public HashMap<String, Node> variableNodeMapper(String var, Node n)
     {
-        
-        return null;
+        HashMap<String, Node> resultMap = new HashMap<>();
+
+        resultMap.put(var, n);
+
+        return resultMap;
 
     }
 
