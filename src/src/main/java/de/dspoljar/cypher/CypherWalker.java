@@ -212,43 +212,45 @@ public class CypherWalker
 
         // Write all nodes in array list
 
+        /*
         for (Node n : nodesInGraph)
         {
 
             nodeList.add(n);
 
-        }
+        } */
+
+
+
 
 
 
         for (Map.Entry<String, String> entry : hashCollector.nodesLabelsMap.entrySet())
-          {
+        {
+            Node tempNode = graph.findNode(entry.getValue());
+            //Iterable<Node> tempNodeList = graph.findNodes(entry.getKey());
 
-              int counter = 0;
+            if (!resultObject.resultVarsNodes.containsKey(entry.getKey()))
+            {
+                System.out.println(tempNode);
+                resultObject.resultVarsNodes.put(entry.getKey(), tempNode);
+            }
 
+        }
               System.out.println("-------");
-              //Iterable<Node> tempNodeList = graph.findNodes(entry.getKey());
+
+                // int counter = 0;
               //System.out.println((String) nodeList.get(counter).getProperty(entry.getKey()));
               //System.out.println(nodeList.get(counter).get("n"));
 
-              resultObject.resultVarsNodes.put(entry.getKey(), nodeList.get(counter));
 
-              counter++;
+            //  resultObject.resultVarsNodes.put(entry.getKey(), nodeList.get(counter));
 
-
-                /*
-                while (tempNodeList.iterator().hasNext())
-                {
-
-                  Node tempNode = tempNodeList.iterator().next();
-                  System.out.println("TEMNODE"+tempNode);
-                  resultObject.resultVarsNodes.put(entry.getKey(), tempNode);
-                  tempNode = null;
-
-                } */
+            //  counter++;
 
 
-            }
+
+
 
             System.out.println("Result Map: "+resultObject.resultVarsNodes);
 
