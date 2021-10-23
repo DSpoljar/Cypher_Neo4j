@@ -224,6 +224,7 @@ public class CypherWalker
 
 
 
+        // Put these in separate methods in CypherResultConstructor?
 
         for (Map.Entry<String, String> entry : hashCollector.nodesLabelsMap.entrySet())
         {
@@ -237,22 +238,33 @@ public class CypherWalker
             }
 
         }
+
+
+        if (hashCollector.whereVarList.size() >= 1)
+        {
+
+            for (Map.Entry<String, Node> entry : resultObject.resultVarsNodes.entrySet())
+            {
+                int cnt = 0;
+
+
+                System.out.println(cnt);
+                resultObject.resultsWHEREVars.put(entry.getValue(), hashCollector.whereVarList.get(cnt));
+
+                cnt++;
+
+            }
+
+
+        }
+
+
+
               System.out.println("-------");
-
-                // int counter = 0;
-              //System.out.println((String) nodeList.get(counter).getProperty(entry.getKey()));
-              //System.out.println(nodeList.get(counter).get("n"));
-
-
-            //  resultObject.resultVarsNodes.put(entry.getKey(), nodeList.get(counter));
-
-            //  counter++;
-
-
-
 
 
             System.out.println("Result Map: "+resultObject.resultVarsNodes);
+            System.out.println("Result WHERE vars: "+resultObject.resultsWHEREVars);
 
         return resultObject;
 

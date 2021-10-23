@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,6 +53,9 @@ class CypherWalkerTest
 
 
         CypherResultConstructor results = testWalker.acceptQuery(g, query);
+        System.out.println((String) node.getProperty("symbol"));
+
+        //assertEquals(node.getProperty("symbol"), results.resultVarsNodes.get("n").getId());
 
 
 
@@ -92,17 +96,18 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node n = g.addNode("Gene");
-        n.setProperty("name", "e");
+        n.setProperty("name", "'e'");
         g.update(n);
         String query = "MATCH (n:Gene) WHERE n.name CONTAINS 'e' RETURN n.name";
         CypherWalker testWalker = new CypherWalker();
         CypherResultConstructor resultObject = testWalker.acceptQuery(g, query);
 
+        for (Map.Entry<Node, String> entry : resultObject.resultsWHEREVars.entrySet())
+        {
 
-       // testWalker.acceptQuery(g, query, extractor, results, "e");
+             assertEquals(n.getProperty("name"), entry.getValue());
 
-       // System.out.println(testWalker.extractVariableFromWhereQuery("e"));
-
+        }
 
 
     }

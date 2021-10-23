@@ -9,6 +9,7 @@ public class CypherResultConstructor
 {
 
     public final HashMap<String, Node> resultVarsNodes = new HashMap<String, Node>();
+    public final HashMap<Node, String> resultsWHEREVars= new HashMap<Node, String>();
 
 
 
