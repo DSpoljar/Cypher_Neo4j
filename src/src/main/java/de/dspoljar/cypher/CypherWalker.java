@@ -27,13 +27,14 @@ public class CypherWalker
      final List<String> variableKeyList = new ArrayList<String>();
      final List<String> nameValueList = new ArrayList<String>();
 
-    //final Graph g = Graph.createTempGraph();
 
      public HashMap<String, String> chainedLabelAndVariable = new HashMap<String, String>();
      public HashMap<String, String> keyAndProperties = new HashMap<String, String>();
 
 
      public CypherResultConstructor resultObject = new CypherResultConstructor();
+
+
 
 
     final List<String> executeVariableClauseList = new ArrayList<String>();
@@ -49,7 +50,7 @@ public class CypherWalker
     {
 
         super();
-      //  CypherParser cyphPars = new CypherParser(tokenStream)
+
 
     }
 
@@ -205,27 +206,19 @@ public class CypherWalker
         System.out.print(hashCollector.whereVarList.toString());
 
 
+      //  hashCollector.propertyMap = resultObject.nodesToPropertiesMapper(hashCollector.nodesLabelsMap, hashCollector.propertyCollector);
+
         System.out.println(resultObject.nodesToPropertiesMapper(hashCollector.nodesLabelsMap, hashCollector.propertyCollector));
 
-        Iterable<Node> nodesInGraph =  graph.getNodes();
-        ArrayList<Node> nodeList = new ArrayList<Node>();
-
-        // Write all nodes in array list
-
-        /*
-        for (Node n : nodesInGraph)
-        {
-
-            nodeList.add(n);
-
-        } */
+         Map<HashMap<String, String>, HashMap<String, String>> propertyMap =
+                resultObject.nodesToPropertiesMapper(hashCollector.nodesLabelsMap, hashCollector.propertyCollector);
 
 
 
 
+        // Possible relocation to CypherResultConstructor.
 
-        // Put these in separate methods in CypherResultConstructor?
-
+        // Mapping nodes and labels.
         for (Map.Entry<String, String> entry : hashCollector.nodesLabelsMap.entrySet())
         {
             Node tempNode = graph.findNode(entry.getValue());
@@ -239,6 +232,43 @@ public class CypherWalker
 
         }
 
+        // Mapping nodes and properties.
+        for (Map.Entry<HashMap<String, String>, HashMap<String, String>> entry : propertyMap.entrySet())
+        {
+             Node tempNode;
+
+            for (Map.Entry<String, String> nodeValue : entry.getKey().entrySet())
+            {
+                tempNode = graph.findNode(nodeValue.getValue());
+
+                for (Map.Entry<String, String> property : entry.getValue().entrySet())
+                {
+                    resultObject.resultPropertyMap.put(tempNode, property.getValue());
+                }
+
+            }
+
+            System.out.println(entry.getKey().toString());
+
+        }
+
+        // Mapping edges and labels.
+        for (Map.Entry<String, String> entry : hashCollector.edgesLabelsMap.entrySet())
+        {
+            Edge tempEdge = graph.findEdge(entry.getValue());
+            //Iterable<Node> tempNodeList = graph.findNodes(entry.getKey());
+
+            if (!resultObject.resultVarsEdges.containsKey(entry.getKey()))
+            {
+                System.out.println(tempEdge);
+                resultObject.resultVarsEdges.put(entry.getKey(), tempEdge);
+            }
+
+        }
+
+
+
+        // Mapping nodes and WHERE variables.
 
         if (hashCollector.whereVarList.size() >= 1)
         {
@@ -258,12 +288,13 @@ public class CypherWalker
 
         }
 
-
-
               System.out.println("-------");
 
+            // PRINTING RESULTS
 
             System.out.println("Result Map: "+resultObject.resultVarsNodes);
+            System.out.println("Result Edge Map: "+resultObject.resultVarsEdges);
+            System.out.println("Result Properties: "+resultObject.resultPropertyMap);
             System.out.println("Result WHERE vars: "+resultObject.resultsWHEREVars);
 
         return resultObject;
@@ -820,7 +851,7 @@ public class CypherWalker
         final CypherParser.OC_DashContext query = statement;
 
 
-        System.out.println(query.children.toString());
+       // System.out.println(query.children.toString());
 
     }
 
@@ -1591,33 +1622,34 @@ public class CypherWalker
          if (query.oC_CaseExpression() != null)
         {
 
-           System.out.print("OC_CASEEXPRESSION: "+query.oC_Variable().children.toString());
+         //  System.out.print("OC_CASEEXPRESSION: "+query.oC_Variable().children.toString());
 
         }
 
          if (query.oC_FilterExpression() != null)
         {
-            System.out.println("OC_FilterExpression: "+query.oC_FilterExpression().children.toString());
+
+            //System.out.println("OC_FilterExpression: "+query.oC_FilterExpression().children.toString());
 
         }
 
          if (query.oC_Parameter() != null)
         {
-            System.out.println("OC_Parameter: "+query.oC_Parameter().children.toString());
+            // System.out.println("OC_Parameter: "+query.oC_Parameter().children.toString());
 
         }
 
          if (query.oC_FunctionInvocation() != null)
         {
 
-            System.out.println("OC_FunctionInvo: "+query.oC_FunctionInvocation().children.toString());
+            // System.out.println("OC_FunctionInvo: "+query.oC_FunctionInvocation().children.toString());
 
         }
 
          if (query.oC_ListComprehension() != null)
         {
 
-            System.out.println("OC_ListComprehension: "+query.oC_ListComprehension().children.toString());
+            // System.out.println("OC_ListComprehension: "+query.oC_ListComprehension().children.toString());
 
         }
 
@@ -1632,7 +1664,7 @@ public class CypherWalker
          if (query.oC_PatternComprehension() != null)
         {
 
-            System.out.println("oc_patterncomprehension: "+query.oC_PatternComprehension().children.toString());
+            //System.out.println("oc_patterncomprehension: "+query.oC_PatternComprehension().children.toString());
 
 
 
@@ -1641,7 +1673,7 @@ public class CypherWalker
          if (query.oC_RelationshipsPattern() != null)
         {
 
-            System.out.println("OC_RelationshipPattern: "+query.oC_RelationshipsPattern().children.toString());
+            //System.out.println("OC_RelationshipPattern: "+query.oC_RelationshipsPattern().children.toString());
 
 
         }
@@ -1685,7 +1717,7 @@ public class CypherWalker
         if (query.oC_MapLiteral() != null)
         {
 
-            System.out.println("OC_MaLiteral_CLAUSE "+query.oC_MapLiteral().toString());
+            //System.out.println("OC_MaLiteral_CLAUSE "+query.oC_MapLiteral().toString());
 
         }
 
@@ -1693,21 +1725,21 @@ public class CypherWalker
         {
 
 
-            System.out.println("OC_ListLiteral "+query.oC_ListLiteral().toString());
+            // System.out.println("OC_ListLiteral "+query.oC_ListLiteral().toString());
 
         }
 
         if (query.oC_BooleanLiteral() != null)
         {
 
-            System.out.println("OC_BooleanLiteral "+query.oC_MapLiteral().toString());
+            //System.out.println("OC_BooleanLiteral "+query.oC_MapLiteral().toString());
 
         }
 
         if (query.oC_NumberLiteral() != null)
         {
 
-            System.out.println("OC_NumberLiteral "+query.oC_NumberLiteral().toString());
+            //System.out.println("OC_NumberLiteral "+query.oC_NumberLiteral().toString());
 
         }
 

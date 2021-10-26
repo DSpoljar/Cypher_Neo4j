@@ -41,6 +41,8 @@ public class CypherExtractor
 
         public HashMap<String, String> variableCollector = new HashMap<String, String>();
 
+        //public Map<HashMap<String, String>, HashMap<String, String>> propertyMap = new HashMap<>();
+
         public List<String> whereVarList = new ArrayList<String>(); // Will contain extracted variables from WHERE query.
 
         public HashMapper()

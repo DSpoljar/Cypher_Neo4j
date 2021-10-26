@@ -3,8 +3,11 @@ package de.dspoljar.cypher;
 import de.unibi.agbi.biodwh2.core.model.graph.Edge;
 import de.unibi.agbi.biodwh2.core.model.graph.Graph;
 import de.unibi.agbi.biodwh2.core.model.graph.Node;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,7 +58,14 @@ class CypherWalkerTest
         CypherResultConstructor results = testWalker.acceptQuery(g, query);
         System.out.println((String) node.getProperty("symbol"));
 
-        //assertEquals(node.getProperty("symbol"), results.resultVarsNodes.get("n").getId());
+
+        for (Map.Entry<Node, String> entry : results.resultPropertyMap.entrySet())
+        {
+
+            // Trim the variable
+            assertEquals(node.getProperty("symbol"), StringUtils.strip(entry.getValue(), "\""));
+
+        }
 
 
 
@@ -87,6 +97,7 @@ class CypherWalkerTest
 
         assertEquals(n.getId(), results.resultVarsNodes.get("g").getId());
         assertEquals(p.getId(), results.resultVarsNodes.get("p").getId());
+        assertEquals(r.getId(), results.resultVarsEdges.get("r").getId());
 
     }
 
@@ -96,7 +107,7 @@ class CypherWalkerTest
 
         final Graph g = Graph.createTempGraph();
         Node n = g.addNode("Gene");
-        n.setProperty("name", "'e'");
+        n.setProperty("name", "e");
         g.update(n);
         String query = "MATCH (n:Gene) WHERE n.name CONTAINS 'e' RETURN n.name";
         CypherWalker testWalker = new CypherWalker();
@@ -105,15 +116,13 @@ class CypherWalkerTest
         for (Map.Entry<Node, String> entry : resultObject.resultsWHEREVars.entrySet())
         {
 
-             assertEquals(n.getProperty("name"), entry.getValue());
+             // Trim the variable
+             assertEquals(n.getProperty("name"), StringUtils.strip(entry.getValue(), "'"));
 
         }
 
 
     }
-
-
-
 
 
 

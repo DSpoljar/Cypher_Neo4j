@@ -1,5 +1,6 @@
 package de.dspoljar.cypher;
 
+import de.unibi.agbi.biodwh2.core.model.graph.Edge;
 import de.unibi.agbi.biodwh2.core.model.graph.Node;
 
 import java.util.HashMap;
@@ -9,7 +10,10 @@ public class CypherResultConstructor
 {
 
     public final HashMap<String, Node> resultVarsNodes = new HashMap<String, Node>();
+    public final HashMap<String, Edge> resultVarsEdges = new HashMap<String, Edge>();
     public final HashMap<Node, String> resultsWHEREVars= new HashMap<Node, String>();
+    public HashMap<Node, String> resultPropertyMap = new HashMap<>();
+
 
 
 
